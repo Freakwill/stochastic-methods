@@ -28,8 +28,13 @@ Problem: $Z$ dose not have a closed form/explict computation/ is intractable.
 
 But we have
 $$
-\frac{\partial p(x|\theta)}{\partial\theta}=  \frac{\partial \ln f(x;\theta)}{\partial\theta}-\int p(x|\theta) \frac{\partial \ln f(x;\theta)}{\partial\theta}
+\frac{\partial p(x|\theta)}{\partial\theta}=  \frac{\partial \ln f(x;\theta)}{\partial\theta}-\int p(x|\theta) \frac{\partial \ln f(x;\theta)}{\partial\theta}\\
+=  \frac{\partial \ln f(x;\theta)}{\partial\theta}-E_{x\sim p(x|\theta)} \frac{\partial \ln f(x;\theta)}{\partial\theta}
 $$
+
+by the following fact
+
+*Fact.* $\partial_y \ln p(y) = \partial_y \ln \int p(x,y) dx = \int p(x|y)\partial_y \ln p(x,y)dx$
 
 ### Approximation of Maximum-Likelihood
 
@@ -104,6 +109,9 @@ $\frac{\partial \bar{l}(\theta)}{\partial\theta} = Gp_d-Gp_\theta\approx Gp_d - 
 
 ## Convergence
 
+### fixed points of iteration (discrete case)
+$Gp_0=Gp^\infty=Gp^k$ where $p^k=T^kp_0$
+
 ### updating form
 update after sampling $x\sim p^0, x^k\sim p^k$:
 
@@ -153,7 +161,7 @@ matrix form: $\Delta W=\eta(\langle x\circ x\rangle_{x^0}-\langle x\circ x\rangl
 *Algo.*
 input $X$
 1. initialize $W$
-2. $X^1$ by MCMC from $X^0$
+2. $X^1$ by MCMC/Gibbs sampling from $X^0$ (How do you implement it by Gibbs sampling?)
 3. update $W$
 4. repeat 2-3
 
@@ -197,7 +205,7 @@ $$
 
 We have
 $$
-\frac{\partial p(x|\theta)}{\partial\theta}=\langle\frac{\partial E}{\partial\theta}\rangle_{p(z|x)}-\langle\frac{\partial E}{\partial\theta}\rangle_{p(x,z)}\\
+\frac{\partial \log p(x|\theta)}{\partial\theta}=\langle\frac{\partial E}{\partial\theta}\rangle_{p(z|x)}-\langle\frac{\partial E}{\partial\theta}\rangle_{p(x,z)}\\
 $$
 
 ==>
@@ -242,6 +250,8 @@ input $X^0$
 2. CD algo for weighted likelihood $\ln \sum_kw_kp(x_k)$
 3. CD algo for marginal likelihood $\int p(x,z)dz$ or $\sum_z p(x,z)$
 4. load a dataset of images from the web, then use CD to learn it and generate a new image.
+5. Given a laten variable model $P(x,z)=\frac{e^{E(x,z)}}{Z}$. Let $F(x)=\log \sum_z e^{E(x,z)}$. Verify $D F = E_{z\sim P(z|x)}D E(x,z)$, $D$ is 1-order diff. operator such as $\partial_{x_i}$ or $\nabla_x$. Compute $D^2F=?$
+6. For multivariate Gaussian $N(\mu,\Sigma)$, give out CD1, under Gibbs sampling.
 
 *References*
 

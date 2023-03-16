@@ -19,13 +19,21 @@ Return a sample $\{x_t\} \sim f$
 ### compute expectation
 $$
 Eh(X) = E h(Y)\frac{p_X(Y)}{p_Y(Y)}\\
-\approx \frac{1}{N}\sum_{y_i\sim p_Y} h(y_i)\frac{p_X(y_i)}{p_Y(y_i)}
+\approx \frac{1}{N}\sum_{y_i\sim p_Y} h(y_i)\frac{p_X(y_i)}{p_Y(y_i)}~~\text{(unbiased form)}
 \\
 \approx \frac{\sum_{y_i\sim p_Y} h(y_i)p_X(y_i)/p_Y(y_i)}{\sum_{y_i\sim p_Y}p_X(y_i)/p_Y(y_i)} ~~\text{(biased form)}
+\\
+\approx \frac{N-1}{N}\sum_{y_i\sim p_Y}  \frac{h(y_i)p_X(y_i)/p_Y(y_i)}{\sum_{y_j\sim p_Y,j\neq i}p_X(y_j)/p_Y(y_j)} ~~\text{(biased form as left one out)}
 $$
-where $p_X$ is intractable but $p_Y$ is easy and $p_X\ll p_Y$.
+where $p_X$ is intractable but $p_Y$ is "easy-to-sample-from" and $p_X\ll p_Y$.
 
 esp. when $Y\sim U(\mathcal{X})$, $Eh\approx \frac{\sum_{y_i\sim p_Y} h(y_i)p_X(y_i)}{\sum_{y_i\sim p_Y}p_X(y_i)} ~~\text{(biased form)}$
+
+Introduce $k(z|y)$, we have
+$$
+Eh(X) = E_{x,y\sim p(x)q(y)}h(X)=Eh(Z)\frac{p(Z,Y)}{q(Z,Y)}\\
+= E_{y\sim q}E_{z\sim k(z|y)}h(z)\frac{p(z)}{k(z|y)}
+$$
 
 ### integral
 $$
