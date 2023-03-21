@@ -240,15 +240,14 @@ if __name__ == '__main__':
 
     # digists = datasets.load_digits()
     # X_train, y_train = digists.data, digists.target
-
-    from datasets import load_hanzi
-    X = load_hanzi(ravel=True)
-
-    X = (X>50).astype(np.int_) + (X>100).astype(np.int_) + (X>150).astype(np.int_) + (X>200).astype(np.int_)
-
     # X = X_train[(y_train==0)]
 
-    rbm = CDRBM(ndim_latents=10, max_iter=300, mc_iter=2, persistent=True)
+    # from datasets import load_hanzi
+    # X = load_hanzi(ravel=True)
+    # X = (X>50).astype(np.int_) + (X>100).astype(np.int_) + (X>150).astype(np.int_) + (X>200).astype(np.int_)
+
+
+    rbm = CDRBM(ndim_latents=10, max_iter=300, mc_iter=2, persistent=False)
     # number of values taken by x, {0,1,...16}
     rbm.n_values = 5 # currently, you have to set the attr. manually.
     rbm.fit(X)

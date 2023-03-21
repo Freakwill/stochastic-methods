@@ -57,10 +57,12 @@ $\partial_\theta J = \sum_i(\nabla  E\cdot \nabla \partial_\theta E +\Delta\part
 
 *Fact.* 
 1. $$
-E_{x\sim p(x)}\langle\psi, \nabla \log p(x)\rangle=
+E_{x\sim p(x)}\langle\psi, \nabla \log p(x)\rangle =
 E_{(x,z)\sim p(x,z)}\langle\psi, \nabla \log p(x|z)\rangle
 $$
-2. $$\frac{1}{2}E_{(x,z)\sim p(x,z)}\|\psi(x;\theta)-\nabla \log p(x|z)\|^2\sim J_{ESM}
+
+2. 
+$$\frac{1}{2}E_{(x,z)\sim p(x,z)}\|\psi(x;\theta)-\nabla \log p(x|z)\|^2\sim J_{ESM}
 $$
 
 
@@ -69,10 +71,10 @@ Denoising model:
 - $p(x|z)$: $x$ is the noised version of data $z$
 
 **Denoising  score matching (DSM)** :
- $$
-J_{DSM}(p(x)):=\frac{1}{2}E\|\psi(x;\theta)-\nabla \log p(x|z)\|^2\\
-\sim J_{ESM}(p(x))
-$$
+%  $$
+% J_{DSM}(p(x)):=\frac{1}{2}E\|\psi(x;\theta)-\nabla \log p(x|z)\|^2\\
+% \sim J_{ESM}(p(x))
+% $$
 
 Gaussian DSM: $\nabla \log p(x|z)\|^2=\frac{z-x}{\sigma^2}$
 $$
@@ -98,7 +100,7 @@ Energy of Model: $E(x)=\sum_k G(W_kx)$
 
 ### Laten Var. Models
 
-Model: $\frac{e^{E(x;z)}}{Z(\theta)}$
+Model: $\frac{e^{E(x;z)}}{Z(\theta)}$ ($x$ is continous)
 
 Let $F(x)=\log \sum_z e^{E(x,z)}$, as the energy of $p(x)$
 

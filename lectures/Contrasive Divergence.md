@@ -11,7 +11,7 @@ and energy-based (Gibbs distributions, etc.) model parameters.
 
 Notations:
 
-- $\langle\cdot\rangle_{p}$: expection under distr. $p$
+- $\langle\cdot\rangle_{p}$: expection under distr. $p$, i.e.$\mathbb{E}_p$
 - $\langle\cdot\rangle_{X}$: mean on sample $X$
 
 ## Model
@@ -81,7 +81,7 @@ $$
 
 *Fact.* Assume $\frac{D_{KL}(p^k\|p)}{\partial p^k}$ is small
 $$
-\frac{\partial CD_k}{\partial\theta} =\frac{\partial J(\theta)}{\partial\theta} + \frac{\partial D_{KL}(p^k\|p)}{\partial p^k}\frac{\partial p^k}{\partial\theta}\\
+\frac{\partial CD_k}{\partial\theta} \approx \frac{\partial J(\theta)}{\partial\theta} + \frac{\partial D_{KL}(p^k\|p)}{\partial p^k}\frac{\partial p^k}{\partial\theta}\\
  \approx \frac{\partial J(\theta)}{\partial\theta}
 $$
 where $J=-\bar{l}$.
@@ -198,6 +198,9 @@ The algo. is left to readers
 
 ### Laten value models
 
+*Fact.*  $F(x)=\log \sum_z e^{E(x,z)} \Longrightarrow \frac{\partial F}{\partial\theta} = \mathbb{E}_{z\sim P(z|x)} \frac{\partial E(x,z)}{\partial\theta}$,
+
+Model:
 $$
 p(x,z|\theta)=\frac{ e^{E(x,z|\theta)}}{Z(\theta)}\\
 p(x|\theta)=\frac{\sum_z e^{E(x,z|\theta)}}{Z(\theta)}
@@ -219,8 +222,8 @@ $$
 *Algo.*
 Input $X^0$
 
-- Gibbs sampling: $X^0\to z$ by $P(z|x)$ $\to$  $X^1$ by $P(x|z)$
-- update $W$ by $\langle \frac{\partial E}{\partial\theta} \rangle_{X^0,z} -\langle \frac{\partial E}{\partial\theta} \rangle_{X^1,z}$
+- Gibbs sampling: $X^0\to z$ by $P(z|x)$ $\to$  $X^1$ by $P(x|z)\to z^1$
+- update $W$ by $\langle \frac{\partial E}{\partial\theta} \rangle_{X^0,z} -\langle \frac{\partial E}{\partial\theta} \rangle_{X^1,z^1}$
 (or by $\langle \int dz\frac{\partial E}{\partial\theta} p(z|x) \rangle_{X^0} -\langle \int dz\frac{\partial E}{\partial\theta} \rangle_{X^1}$)
 
 

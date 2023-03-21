@@ -4,7 +4,7 @@
 Statistical Learning
 
 
-## Abbrivation
+## Abbrivations
 ### I
 - distr.: distribution
 - proba.: probability
@@ -19,10 +19,11 @@ Statistical Learning
 - GMM: Gaussian mixed model
 - IS: Importance sampling
 - KLD: K-L divergence
-- ML(E): max likelihood (estimation)
+- ML(E): max. likelihood (estimation)
 - MCMC: Markov Chain Monte Carlo
+- MRF/MN: Markov Random Field/Network
 - (R)BM: (Ristricted) Boltzmann Machine
-- PDF: proba. density function
+- PDF: Proba. density function
 - SGD: Stochastic Gradient Descent
 - (V)AE: (Var.) Autoencoder
 
