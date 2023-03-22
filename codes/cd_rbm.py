@@ -238,9 +238,9 @@ if __name__ == '__main__':
     
     from sklearn import datasets
 
-    # digists = datasets.load_digits()
-    # X_train, y_train = digists.data, digists.target
-    # X = X_train[(y_train==0)]
+    digists = datasets.load_digits()
+    X_train, y_train = digists.data, digists.target
+    X = X_train[(y_train==0)]
 
     # from datasets import load_hanzi
     # X = load_hanzi(ravel=True)

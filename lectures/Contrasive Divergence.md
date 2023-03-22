@@ -244,7 +244,19 @@ input $X^0$
 
 ### Weighted CD
 
+IS for CD,
+$$
+\frac{\partial p(x|\theta)}{\partial\theta}
+=  \frac{\partial \ln f(x;\theta)}{\partial\theta}-E_{x\sim p(x|\theta)} \frac{\partial \ln f(x;\theta)}{\partial\theta}\\
+= \frac{\partial \ln f(x;\theta)}{\partial\theta}-E_{x\sim q} \frac{p(x|\theta)}{q(x)} \frac{\partial \ln f(x;\theta)}{\partial\theta}\\
+\approx = \frac{\partial \ln f(x;\theta)}{\partial\theta}-\sum_{x\sim q} w_x\frac{\partial \ln f(x;\theta)}{\partial\theta}
+$$
+
+
+
 ## CD for transfer learning
+
+for readers
 
 ---
 
