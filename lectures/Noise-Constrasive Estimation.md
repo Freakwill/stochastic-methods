@@ -22,12 +22,12 @@ $$
 l(\theta)=\sum \ln h(x^{(d)}_i) +\sum \ln (1-h(x^{(n)}_i))\\
 h(u; θ) = r_\nu  (G(u; θ)) ; G(u; θ) = \ln p_d - \ln p_n
 $$
-where $r_\nu(x)=\frac{1}{1-e^{-\nu x}}$
+where $r_\nu(x)=\frac{1}{1-\nu e^{-x}}$.
 
 NCE-likelihood:
-$\log p_m(x;\theta)=\log p_0(x;\alpha)+c$ where $\theta=(\alpha,c)$ without any normalization constraint for $c$, but assume $\exists \theta, p_m(x;\theta)=p_d(x)$
+$\log p_m(x;\theta)=\log p_0(x;\alpha)+c$ where $\theta=(\alpha,c)$ without any normalization constraint for $c$, but assume $\exists \theta, p_m(x;\theta)=p_d(x)$.
 
-after learning, $\hat{c}\approx-\ln Z(\hat\alpha)$
+after learning, $\hat{c}\approx-\ln Z(\hat\alpha)$.
 
 ![](nce.jpg)
 
@@ -35,20 +35,12 @@ after learning, $\hat{c}\approx-\ln Z(\hat\alpha)$
 
 ### obj. function
 
+For true data ${x^{(d)}}$ and noise data ${x^{(n)}}$,
 $$
-J_T(\theta):=-\frac{1}{N_d}(\sum \ln h(x^{(d)}_i) +\sum \ln (1-h(x^{(n)}_i)))\\
+J_T(\theta):=\frac{1}{N_d}(\sum \ln h(x^{(d)}_i) +\sum \ln (1-h(x^{(n)}_i)))\\
 \overset{p}{\rightarrow}
-J(\theta):=-(E_d \ln h(x) +\nu E_n\ln (1-h(x)))
+J(\theta):=E_d \ln h(x) +\nu E_n\ln (1-h(x))
 $$
-
-
-*nonparametric form:*
-
-$$
-\tilde{J}(f):= E_d \ln r_\nu(f(x^{(d)}_i)-\ln p_n(x^{(d)}_i))\\+ \nu E_n \ln (1-r_\nu(f(x^{(n)}_i)-\ln p_n(x^{(n)}_i)))
-$$
-==>
-$\tilde{J}(\ln p_m)=J(\theta)$
 
 *Remark.* A fundamental point in the theorem is that the maximization is performed without any normalization constraint for $f$
 
@@ -59,12 +51,21 @@ g := \nabla G = \nabla \ln p_m  ~\text{(score function)}
 $$
 
 for NCE,
-$g=(\nabla_\alpha G, 1)^T$
+$g=(\nabla_\alpha G, 1)^T$ and
+$$
+\nabla J_T =(\frac{1}{N_d}\sum (1-h(x^{(d)}_i))\nabla_\alpha G(x^{(d)}_i) + \nu\frac{1}{N_n}\sum h(x^{(n)}_i) \nabla_\alpha G(x^{(n)}_i), \\1-\frac{1}{N_d}\sum (h(x^{(d)}_i)) + \nu\frac{1}{N_n}\sum h(x^{(n)}_i) )
+$$
 
 *Fact.*
-min $J_T$  iff train a classifier (discrimination form, with cross entropy loss) for augumented data $(X,D)$
+min $J_T$  iff train a classifier (discrimination form, with cross entropy loss) for augumented data $(X,D)$ (may not get the est. of param.)
 
 ## Properties
+
+*nonparametric form:*
+$$
+\tilde{J}(f):= E_d \ln r_\nu(f(x^{(d)}_i)-\ln p_n(x^{(d)}_i))\\+ \nu E_n \ln (1-r_\nu(f(x^{(n)}_i)-\ln p_n(x^{(n)}_i)))
+$$
+We have $\tilde{J}(\ln p_m(x;\theta))=J(\theta)$.
 
 **Theorem 1**
 $\tilde{J}$ attains max at $f= \ln p_d$. No other extremes, if $p_d\ll p_n$
@@ -82,3 +83,21 @@ $$
 esp. MSE $E(\hat\theta_T-\theta^*)^2\sim T^{-1}\Sigma$
 
 ## Applications
+
+### word2vec---embed words to vectors
+word represention/embedding $v: W\to \R^d$, where $W$ is the set of words
+
+model:
+$$
+p(w,c)\sim e^{v(w)\cdot v(c)}
+$$
+where $v(c)=\frac{1}{|c|}\sum_{w\in c}v(w)$.
+
+noise distr:
+$$
+p(w,c)\sim \hat{p}(w)\hat{p}(c)^\alpha
+$$
+
+---
+*References*
+1. 

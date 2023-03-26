@@ -21,6 +21,7 @@ The following abbrivations are benefit for reading references.
 - max./min./opt.: You know
 - obj.: objective/objection
 - approx.: approximating/approximation
+- lhs/rhs: left/right-hand side
 
 ### II
 - GMM: Gaussian mixed model
@@ -44,6 +45,7 @@ The following abbrivations are benefit for reading references.
 - NCE: noise-contrasive estimation
 - (E/I)SM: (explicit/implicit) score matching
 - NS/NEG: Negative Sampling
+- NPLM: Neural Probabilistic Language Model
 
 
 ### Others

@@ -25,6 +25,8 @@ $$
 
 *Remark.* ESM=the diff of the score of the model distr. and the that of true distr. 
 
+*Remark.* ESM is the Fisher div. denoted by $D_F(p,p_\theta)$.
+
 *Fact.* $J(\theta) = 0 \iff  p(x|\theta)=p(x)$ where $p(x)>0$
 
 
@@ -132,11 +134,23 @@ $$
 ==>
 $$
 J_{DSM}=\frac{1}{\sigma^4}E\|W^T\mathrm{softmax}(Wx+b)+c-z\|^2\\
-\approx \frac{1}{\sigma^4}\sum_{i}\sum_{j}\|W^T\mathrm{softmax}(Wx_i^{j}+b)+c-z_i\|^2
+\approx \frac{1}{\sigma^4}\sum_{i}\sum_{j}\|W^T\mathrm{softmax}(Wx_i^{j}+b)+c-z_i\|^2, x_{i}^{j}\sim p(x|z_i)
 $$
 
 iff train nn $x\mapsto W^T\mathrm{softmax}(Wx+b)+c$ by data $\{x_{ij},z_i\}$
 
+
+## Generalized SM
+
+Generalized Fisher div.
+
+$$
+D_{K}(p\|q)=\int p(\frac{Lp}{p}-\frac{Lq}{q})^2\\
+\sim \int p((\frac{Lq}{q})^2- 2L^*(\frac{a}{q}))
+$$
+
+$L:F\to F^n$ is linear and complete, where $F$ is a family of PDFs.
+complete: $\frac{Lp}{p}=\frac{Lq}{q}\iff p=q$
 
 ---
 
@@ -147,5 +161,5 @@ iff train nn $x\mapsto W^T\mathrm{softmax}(Wx+b)+c$ by data $\{x_{ij},z_i\}$
 *References*
 
 1. Aapo Hyvarinen. Estimation of Non-Normalized Statistical Models by Score Matching.
-2. Pascal Vincent. A Connection Between Score Matching
-and Denoising Autoencoders, 2010.
+2. Pascal Vincent. A Connection Between Score Matching and Denoising Autoencoders, 2010.
+3. Siwei Lyu. Interpretation and Generalization of Score Matching, 2009.

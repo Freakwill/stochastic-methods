@@ -34,7 +34,7 @@ $$
 
 by the following fact
 
-*Fact.* $\partial_y \ln p(y) = \partial_y \ln \int p(x,y) dx = \int p(x|y)\partial_y \ln p(x,y)dx$
+*Fact.* $\partial_z \ln p(z) = \partial_z \ln \int p(x,z) dx = \int p(x|z)\partial_z \ln p(x,z)dx$
 
 ### Approximation of Maximum-Likelihood
 
@@ -50,7 +50,7 @@ $$
 \approx\langle \frac{\partial \ln f(x;\theta)}{\partial\theta} \rangle_{X^{0}}-\langle \frac{\partial \ln f(x;\theta)}{\partial\theta} \rangle_{X^{\infty}}\\
 \approx \langle \frac{\partial \ln f(x;\theta)}{\partial\theta} \rangle_{X^{0}}-\langle \frac{\partial \ln f(x;\theta)}{\partial\theta} \rangle_{X^{k}}
 $$
-where $X^{k}$ represents the training data transformed using $k$ cycles of MCMC, such that $X^{0} ≡ X, X^{\infty} \sim p(x|\theta)$.
+where $X^{k}$ (fantasy samples) represents the training data transformed using $k$ cycles of MCMC, such that $X^{0} ≡ X, X^{\infty} \sim p(x|\theta)$.
 
 *Remark.* Let $H(\theta)=H(p^0,p_\theta)$,
 $$
@@ -247,9 +247,9 @@ input $X^0$
 IS for CD,
 $$
 \frac{\partial p(x|\theta)}{\partial\theta}
-=  \frac{\partial \ln f(x;\theta)}{\partial\theta}-E_{x\sim p(x|\theta)} \frac{\partial \ln f(x;\theta)}{\partial\theta}\\
-= \frac{\partial \ln f(x;\theta)}{\partial\theta}-E_{x\sim q} \frac{p(x|\theta)}{q(x)} \frac{\partial \ln f(x;\theta)}{\partial\theta}\\
-\approx = \frac{\partial \ln f(x;\theta)}{\partial\theta}-\sum_{x\sim q} w_x\frac{\partial \ln f(x;\theta)}{\partial\theta}
+=  \frac{\partial E(x;\theta)}{\partial\theta}-\mathbb{E}_{x\sim p(x|\theta)} \frac{\partial E(x;\theta)}{\partial\theta}\\
+= \frac{\partial E(x;\theta)}{\partial\theta}-\mathbb{E}_{x\sim q} \frac{p(x|\theta)}{q(x)} \frac{\partial E(x;\theta)}{\partial\theta}\\
+\approx  \frac{\partial E(x;\theta)}{\partial\theta}-\sum_{x\sim q} w_x\frac{\partial E(x;\theta)}{\partial\theta}
 $$
 
 

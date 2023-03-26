@@ -70,4 +70,5 @@ update $T$ (decrease to 0)
 ---
 
 *References*
-C. P. Robert and G. Casella. Monte Carlo Statistical Methods. Springer.
+- C. P. Robert and G. Casella. Monte Carlo Statistical Methods. Springer.
+- D. Bertsimas and J. Tsitsilis. Simulated Annealing, 1993.
