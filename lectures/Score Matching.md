@@ -140,26 +140,50 @@ $$
 iff train nn $x\mapsto W^T\mathrm{softmax}(Wx+b)+c$ by data $\{x_{ij},z_i\}$
 
 
-## Generalized SM
+## Generalized SM(GSM)
 
+### General form
 Generalized Fisher div.
 
 $$
-D_{K}(p\|q)=\int p(\frac{Lp}{p}-\frac{Lq}{q})^2\\
-\sim \int p((\frac{Lq}{q})^2- 2L^*(\frac{a}{q}))
+D_{F}(p\|q)=\int p(\frac{Lp}{p}-\frac{Lq}{q})^2\\
+\sim \int p((\frac{Lq}{q})^2- 2L^*(\frac{Lq}{q}))
 $$
+
+Generalized Fisher info.$H_{F}(p)=\int p(\frac{Lp}{p})^2$
+and its cross version $H_{F}(p,q)=\int p(\frac{Lp}{q})^2$
 
 $L:F\to F^n$ is linear and complete, where $F$ is a family of PDFs.
 complete: $\frac{Lp}{p}=\frac{Lq}{q}\iff p=q$
 
+*Example 1* $L=\nabla$ in standard SM
+
+*Example 2* $Mp=(\int_{x_j}p(x),j=1,\cdots,d)$, we have
+$$
+GSM_M=E\sum_j\int (1-\frac{1}{q(x_j|x_{\hat{j}})})^2 dx_j 
+$$
+
+### extension of SM
+#### discrete SM --- Ratio Matching
+$L(p)(x) = \{p(x_{-j}),j=1,\cdots,d\}$ where $\mathcal{X}=\{-1,1\}^{d}$
+
+#### non-negative SM
+
+#### piecewise-continuous data
+$\psi(x)\Rightarrow \psi(x)\phi(x)$?
+
 ---
+*Exercise*
 
 1. Can SM be applied to train Boltzmann machine?
 2. SM for the model with enery $E(x)=x^TWx + \phi(x)$ on $\R^n$, constrained BMs， where $\phi$ is a reasonable function.
 3. compute $\nabla J_{DSM}$, prompt: $\frac{\partial p_k}{\partial W}=p_k(\delta_{k} -p) \circ x$ where $p_k=\mathrm{softmax}(Wx)_k$
+4. construct your own $L$ for GSM
 
 *References*
 
 1. Aapo Hyvarinen. Estimation of Non-Normalized Statistical Models by Score Matching.
 2. Pascal Vincent. A Connection Between Score Matching and Denoising Autoencoders, 2010.
 3. Siwei Lyu. Interpretation and Generalization of Score Matching, 2009.
+4. Aapo Hyvärinen, Some extensions of score matching, 2007.
+

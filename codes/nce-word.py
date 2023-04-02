@@ -51,7 +51,12 @@ def G(w, c, wv, a=0):
 
 
 def h(w, c, wv, a=0, nu=1):
+    # for NCE
     return r(G(w, c, wv, a), nu)
+
+# def h(w, c, wv, a=0, nu=None):
+#     # for Negative sampling
+#     return expit(similarity(w, c, wv))
 
 
 def DJ(w, c, wv, a, nu, hwc):
@@ -82,22 +87,20 @@ def _fit(W, C, Wn, Cn, nu=2):
     for _ in range(max_iter):
         for k in range(n_batches):
             w, c = W[k*batch_size:(k+1)*batch_size], C[k*batch_size:(k+1)*batch_size]
-            Dwv = DJ(w, c, wv, a, nu, 1-h(w, c, wv, a, nu))
             wn, cn = Wn[k*noise_batch_size:(k+1)*noise_batch_size], Cn[k*noise_batch_size:(k+1)*noise_batch_size]
-            Dwv += nu * DJ(wn, cn, wv, a, nu, h(w, c, wv, a, nu))
+            Dwv = DJ(w, c, wv, a, nu, 1-h(w, c, wv, a, nu)) + nu * DJ(wn, cn, wv, a, nu, h(w, c, wv, a, nu))
             w, c = W[k*batch_size:(k+1)*batch_size], C[k*batch_size:(k+1)*batch_size]
-            Da = 1 - np.mean(h(w, c, wv, a, nu))
             wn, cn = Wn[k*noise_batch_size:(k+1)*noise_batch_size], Cn[k*noise_batch_size:(k+1)*noise_batch_size]
-            Da += nu * np.mean(h(wn, cn, wv, a, nu))
+            Da = 1 - np.mean(h(w, c, wv, a, nu)) + nu * np.mean(h(wn, cn, wv, a, nu))
             wv += learning_rate * Dwv
             a += learning_rate * Da
     return wv, a
 
 
-def fit(d):
+def fit(d, min_count=None, smoothing_coef=1):
+    # d: corpus, List[str]
     global vocab, n_vocab, p_w, p_c, context
     nu = 2
-    smoothing_coef = 1
     alpha = 3/4
     vocab = np.unique(d).tolist()
     n_vocab = len(vocab)
@@ -105,12 +108,12 @@ def fit(d):
     w_c = np.array([(vocab.index(dk), *(vocab.index(d[k+j]) for j in range(-size_window, size_window+1) if j!=0))
         for k, dk in enumerate(d[size_window:-size_window])])
     w, c = w_c[:, 0], w_c[:, 1:]
-    count_w = np.array([np.sum(w==i) for i in range(n_vocab)]) + smoothing_coef
-    p_w = normalize(count_w)
+    count_w = np.array([np.sum(w==i) for i in range(n_vocab)])
+    p_w = normalize(count_w+ smoothing_coef)
     context = np.unique(c, axis=0)
     n_context = len(context)
-    count_c = np.array([np.sum(np.all(context==c, axis=1)) for c in context]) + smoothing_coef
-    p_c = normalize(count_c ** alpha)
+    count_c = np.array([np.sum(np.all(context==c, axis=1)) for c in context])
+    p_c = normalize((count_c + smoothing_coef * n_context) ** alpha)
     n_samples = w.shape[0]
     wn = rv_discrete(values=(np.arange(n_vocab), p_w)).rvs(size=n_samples*nu)
     cn = context[rv_discrete(values=(np.arange(n_context), p_c)).rvs(size=n_samples*nu)]
@@ -136,7 +139,7 @@ def fit(d):
 import pathlib
 import re
 
-d = pathlib.Path('/Users/William/Folders/mycorpus/Archive/hegel.txt').read_text()[:1000]
+d = pathlib.Path('/Users/William/Folders/mycorpus/Archive/hegel.txt').read_text()
 d = [w.strip("\n“”.1234567890:()").lower() for w in re.split(r'\W', d) if w.strip("\n“”.1234567890:()") not in {'', ' ', '\n'}]
 
 fit(d)

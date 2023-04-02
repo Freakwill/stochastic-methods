@@ -68,6 +68,12 @@ $$
 
 *Remark.* Samples cannot be drawn directly from $p(x; \Theta)$ for the partition function, but we can use many cycles of  MCMC sampling to transform our training data (drawn from the target distribution) into data drawn from the proposed distribution Draw samples from $p$ by MCMC. The transformation only involves calculating likelihood ratio $\frac{f(x';\theta)}{f(x;\theta)}$ (without partition funciton).
 
+#### Proposed distr. of MCMC
+$q(x|y)p(y)=q(y|x)p(x)$
+==> $\frac{q(y|x)}{q(x|y)}=e^{E(y)-E(x)}$
+
+a possible proposed distr.: $q(y|x)\sim r(x,y)e^{\frac{1}{2}(E(y)-E(x))}$, where $r(x,y)=r(y,x)$.
+
 ### Contrastive Divergence
 *Definition*
 $$

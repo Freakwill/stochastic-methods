@@ -2,7 +2,14 @@
 
 ## Model
 
-### distr.
+unnormlized-likelihood:
+$\log p_m(x;\theta)=\log p_0(x;\alpha)+c$ where $\theta=(\alpha,c)$ without any normalization constraint for $c$, but assume $\exists \theta, p_m(x;\theta)=p_d(x)$.
+
+after learning, $\hat{c}\approx-\ln Z(\hat\alpha)$.
+
+![](nce.jpg)
+
+### augmented distr.
 
 data distr.: $p_d$
 
@@ -20,18 +27,15 @@ augmented distr: $p(x,d)$, with marginal distr.: $p(x)=p(1)p_d+p(0)p_n$, mixed d
 Conditional Likelihood:
 $$
 l(\theta)=\sum \ln h(x^{(d)}_i) +\sum \ln (1-h(x^{(n)}_i))\\
+=
 h(u; θ) = r_\nu  (G(u; θ)) ; G(u; θ) = \ln p_d - \ln p_n
 $$
 where $r_\nu(x)=\frac{1}{1-\nu e^{-x}}$.
 
-NCE-likelihood:
-$\log p_m(x;\theta)=\log p_0(x;\alpha)+c$ where $\theta=(\alpha,c)$ without any normalization constraint for $c$, but assume $\exists \theta, p_m(x;\theta)=p_d(x)$.
-
-after learning, $\hat{c}\approx-\ln Z(\hat\alpha)$.
-
-![](nce.jpg)
 
 *Remark.* The joint likelihood could not be used!
+
+*Definition.* NCE of $p(x)$ == MCLE of $p(x,d)$
 
 ### obj. function
 
@@ -57,7 +61,7 @@ $$
 $$
 
 *Fact.*
-min $J_T$  iff train a classifier (discrimination form, with cross entropy loss) for augumented data $(X,D)$ (may not get the est. of param.)
+min $J_T$  iff train a classifier (discrimination form, with cross entropy loss) for augmented data $(X,D)$ (may not get the est. of param.)
 
 ## Properties
 
@@ -85,7 +89,7 @@ esp. MSE $E(\hat\theta_T-\theta^*)^2\sim T^{-1}\Sigma$
 ## Applications
 
 ### word2vec---embed words to vectors
-word represention/embedding $v: W\to \R^d$, where $W$ is the set of words
+word represention/embedding $v: W\to \R^d = \R^{|W|\times d}$, where $W$ is the set of words
 
 model:
 $$
@@ -98,6 +102,41 @@ $$
 p(w,c)\sim \hat{p}(w)\hat{p}(c)^\alpha
 $$
 
+### Negative Sampling
+
+assume $p(0)=\nu p(1)$; model distr: $p_1(x)\sim e^{E(x)}$, noise distr: $p_0(x)$; energy: $E$
+
+NS: 
+$$J = \mathbb{E}_{x\sim p}\log expit(E(x))+\nu \mathbb{E}_{x\sim p_0} \log (1-expit(E(x)))\\
+\approx \sum_i(\log expit(E(x_i))+ \sum_j\log (1-expit(E(x_{ij}))))
+$$
+
+It is a logistic regression of $Y\sim B(\mathrm{expit}E(x))$ with the dataset $\{(x_i,1),(x_{ij},0)\}$ where $x_i$ is the data, $x_{ij}\sim p_0$.
+
+Note $J$ is not a conditional likelihood of $p(x,0/1)$.
+
+$$
+h=\frac{p_1}{\nu p_0 + p_1}=\frac{e^E}{\nu Z p_0 + e^E}\\
+=\mathrm{expit}(E) \text{  if $\nu Z p_0=1$}
+$$
+
+fix $\theta$, when $\nu Z p_0=1$, i.e. $p_0\sim 1$, NCE ==> NS.
+
+How do you justify N.S. further?
+
+Consider nonparametric form:
+$$J(E) := \mathbb{E}_{x\sim p}\log expit(E(x))+\nu \mathbb{E}_{x\sim p_0} \log (1-expit(E(x)))
+$$
+
+$D J(E)=0 \iff p=p_0 \nu e^{E}$
+
 ---
+*Exercises*
+1. Justify N.S.
+2. CNCE version of N.S.
+
+
 *References*
-1. 
+1.  Yoav Goldberg and Omer Levy. word2vec Explained: Deriving Mikolov et al.’s Negative-Sampling Word-Embedding Method
+2.  Tomas Mikolov. Distributed Representations of Words and Phrases and their Compositionality
+3.  Yair Omer and Tomer Michaeli. CONTRASTIVE DIVERGENCE LEARNING IS A TIME REVERSAL ADVERSARIAL GAME, 2021.
