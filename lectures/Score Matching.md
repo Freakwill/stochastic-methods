@@ -69,7 +69,7 @@ $\partial_\theta J = \sum_i(\nabla  E\cdot \nabla \partial_\theta E +\Delta\part
   $$
   \frac{1}{2}E_{(x,z)\sim p(x,z)}\|\psi(x;\theta)-\nabla \log p(x|z)\|^2\sim J_{ESM}
   $$
-  that is, if we define $J_{CSM}(z)=\frac{1}{2}E_{x\sim p(x|z)}\|\psi(x;\theta)-\nabla \log p(x|z)\|^2$, then $J_{ESM}\sim E_z J_{CSM}(z)$
+  that is, if we define $J_{CSM}(z):=\frac{1}{2}E_{x\sim p(x|z)}\|\psi(x;\theta)-\nabla \log p(x|z)\|^2$ (conditional SM), then $J_{ESM}\sim E_z J_{CSM}(z)$
 
 
 Denoising model:
