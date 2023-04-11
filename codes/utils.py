@@ -11,9 +11,7 @@ def normalize(a, *args, **kwargs):
 
 def scaling_logit(x, lb=0, ub=255):
     x_ = (x-lb + 0.5) / (ub-lb+0.75)
-    return logit(x)
+    return logit(x_)
 
-
-def scaling_logit(x, lb=0, ub=255):
-    x_ = expit(x)
-    return x_ * (ub-lb+0.75) + lb - 0.5
+def scaling_expit(x, lb=0, ub=255):
+    return expit(x) * (ub-lb+0.75) + lb - 0.5

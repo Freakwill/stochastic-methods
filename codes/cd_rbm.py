@@ -236,9 +236,9 @@ class BinaryCDRBM(CDRBM):
 
 if __name__ == '__main__':
     
-    from sklearn import datasets
+    from sklearn.datasets import load_digits
 
-    digists = datasets.load_digits()
+    digists = load_digits()
     X_train, y_train = digists.data, digists.target
     X = X_train[(y_train==0)]
 
