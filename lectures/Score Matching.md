@@ -72,7 +72,7 @@ $\partial_\theta J = \sum_i(\nabla  E\cdot \nabla \partial_\theta E +\Delta\part
   that is, if we define $J_{CSM}(z):=\frac{1}{2}E_{x\sim p(x|z)}\|\psi(x;\theta)-\nabla \log p(x|z)\|^2$ (conditional SM), then $J_{ESM}\sim E_z J_{CSM}(z)$
 
 
-Denoising model:
+**Denoising model**:
 - $p(z)$: distr. of data
 - $p(x|z)$: $x$ is the noised version of data $z$
 
@@ -105,6 +105,8 @@ Result: SME = MLE
 
 Energy of Model: $E(x)=\sum_k G(W_kx)$
 
+==> ...Your homework
+
 ### Laten Var. Models
 
 Model: $\frac{e^{E(x;z)}}{Z(\theta)}$ ($x$ is continous)
@@ -115,7 +117,7 @@ Let $F(x)=\log \sum_z e^{E(x,z)}$, as the energy of $p(x)$
 
 Give out $J_{ESM},J_{ISM}$
 
-$\Delta F=?$ as your homework.
+$\Delta F=?$ as your homework. 📢
 
 ### Mixed Models
 
@@ -137,8 +139,10 @@ J_{DSM}=\frac{1}{\sigma^4}E\|W^T\mathrm{softmax}(Wx+b)+c-z\|^2\\
 \approx \frac{1}{\sigma^4}\sum_{i}\sum_{j}\|W^T\mathrm{softmax}(Wx_i^{j}+b)+c-z_i\|^2, x_{i}^{j}\sim p(x|z_i)
 $$
 
-iff train nn $x\mapsto W^T\mathrm{softmax}(Wx+b)+c$ by data $\{x_{ij},z_i\}$
+that is, train NN $x\mapsto W^T\mathrm{softmax}(Wx+b)+c$ by data $\{x_{ij},z_i\}$
 
+
+For the code see `codes/dsm.py`
 
 ## Generalized SM(GSM)
 

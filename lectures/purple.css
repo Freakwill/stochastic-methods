@@ -387,12 +387,13 @@ tt {
 }
 
 .mathjax-block {
-    color: var(--title-color);
+    color: blue;
 }
 
 
 .mathjax-block > .code-tooltip {
   bottom: 0.375rem;
+  color: blue;
 }
 
 /* 图片 */
