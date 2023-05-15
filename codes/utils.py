@@ -15,3 +15,4 @@ def scaling_logit(x, lb=0, ub=255):
 
 def scaling_expit(x, lb=0, ub=255):
     return expit(x) * (ub-lb+0.75) + lb - 0.5
+

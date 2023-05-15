@@ -104,7 +104,9 @@ $$
 
 ### Negative Sampling
 
-assume $p(0)=\nu p(1)$; model distr: $p_1(x)\sim e^{E(x)}$, noise distr: $p_0(x)$; energy: $E$
+assume $p(0)=\nu p(1)$; 
+model distr: $p_1(x)\sim e^{E(x)}$, noise distr: $p_0(x)$;
+energy: $E$
 
 NS: 
 $$J = \mathbb{E}_{x\sim p}\log expit(E(x))+\nu \mathbb{E}_{x\sim p_0} \log (1-expit(E(x)))\\
@@ -117,7 +119,7 @@ Note $J$ is not a conditional likelihood of $p(x,0/1)$.
 
 $$
 h=\frac{p_1}{\nu p_0 + p_1}=\frac{e^E}{\nu Z p_0 + e^E}\\
-=\mathrm{expit}(E) \text{  if $\nu Z p_0=1$}
+=\mathrm{expit}(E) \text{ only if $\nu Z p_0=1$}
 $$
 
 fix $\theta$, when $\nu Z p_0=1$, i.e. $p_0\sim 1$, NCE ==> NS.
@@ -130,7 +132,39 @@ $$
 
 $D J(E)=0 \iff p=p_0 \nu e^{E}$
 
+## Variational NCE
+
+*Fact.*
+1. $r(x)=E_{z\sim q(z|x)}t(x,z)$, $g$: concave ==>
+   $$
+   g(r(x))\geq E_{z\sim q(z|x)}g(t(x,z))
+   $$
+2. $r(x)=\int t(x,z) dz$, $g$: concave ==>
+   $$
+   g(r(x))\geq E_{z\sim q(z|x)}g(\frac{t(x,z)}{q(z|x)})
+   $$
+
+Let $g(r)=\log\frac{r}{r+\nu}$.
+$J_{VNCE}:=E_{z\sim q(z|x)}g(\frac{\phi(x,z)}{p_n(x)q(z|x)})+\nu C(\phi,p_n)$ (contrastive ELBO)
+
+*Fact.(contrastive var. indentity)*
+$$
+J_{NCE}-J_{VNCE}=D_f(p(z|x)\| q(z|x))\\
+=D_{KL}(q\|p)-D_{KL}(q\|m)
+$$
+where $m(z|x) = v_x p(z|x) + (1 − v_x)q(z|x)$ and $D_f(p\|q)$: $f$-div with $f_x(u) = \log(v_x + (1 − v_x)u^{-1})$, $v_x=\frac{\phi(x)}{\phi(x)+\nu p_n(x)}$.
+
+*VNCE Algo*
+Input $p(x,z|\theta)$
+Output $\theta$
+1. init. $\theta_0$
+2. - E: Let $q(z|x)=p(z|x,\theta^{(t)})$
+   - M: $\theta^{(t+1)}=\arg\max_\theta J_{VNCE}(\theta,\theta^{(t)})=J_{VNCE}(p_\theta,p_{\theta^{(t)}})$
+
+*Fact.* $J_{NCE}(\theta^{(t)})\nearrow$
+
 ---
+
 *Exercises*
 1. Justify N.S.
 2. CNCE version of N.S.

@@ -19,12 +19,15 @@ from sklearn.base import TransformerMixin
 
 
 
-def _gibbs(x, W, nx, pz=None, mc_iter=1):
+def _gibbs(x, W, nx, pz=None, mc_iter=1, mask=None):
     """Gibbs sampling for RBM
     """
     p, r = W.shape
+    if isinstance(mask, np.ndarray):
+        mask = np.append(mask, [False])
 
     x = np.append(x, [1])
+    xc = x.copy()
     if pz is None or np.all(pz==0):
         pz = expit(np.dot(x, W))
     z = np.random.random(r) < pz
@@ -33,16 +36,21 @@ def _gibbs(x, W, nx, pz=None, mc_iter=1):
         ps = np.cumsum(softmax(np.outer(np.dot(W, z), np.arange(nx)), axis=1), axis=1)
         rv = np.random.random(p)
         x1 = np.apply_along_axis(lambda x:np.where(x)[0][0], 1, rv[:,None]<ps)
+        if isinstance(mask, np.ndarray):
+            x1[~mask] = xc[~mask]
         pz1 = expit(np.dot(x1, W))
         z = np.random.random(r) < pz1
         x1[-1] = z[-1] = pz1[-1] = 1
     return pz[:-1], x1[:-1], pz1[:-1]
 
-def _binary_gibbs(x, W, pz=None, mc_iter=1):
+
+def _binary_gibbs(x, W, pz=None, mc_iter=1, mask=None):
     """
     Gibbs sampling for binary RBM
     """
     p, r = W.shape
+    if isinstance(mask, np.ndarray):
+        mask = np.append(mask, [False])
 
     x = np.append(x, [1])
     if pz is None or np.all(pz==0):
@@ -52,6 +60,8 @@ def _binary_gibbs(x, W, pz=None, mc_iter=1):
     for _ in range(mc_iter):
         px = expit(np.dot(W, z))
         x1 = np.random.random(p) < px
+        if isinstance(mask, np.ndarray):
+            x1[~mask] = x[~mask]
         pz1 = expit(np.dot(x1, W))
         z = np.random.random(r) < pz1
         x1[-1] = z[-1] = pz1[-1] = 1
@@ -100,6 +110,7 @@ class CDRBM(TransformerMixin):
         n_samples, self.n_features_ = X.shape
         self.weight_ = np.zeros((self.n_features_+1, self.ndim_latents+1))
 
+
     @property
     def W_(self):
         return self.weight_[:-1, :-1]
@@ -123,8 +134,8 @@ class CDRBM(TransformerMixin):
         return np.dot(x, self.W_)+self.beta_
 
 
-    def mcmc(self, x, mc_iter=None):
-        return _gibbs(x, self.weight_, self.n_values, mc_iter or self.mc_iter)
+    def mcmc(self, x, mc_iter=None, *args, **kwargs):
+        return _gibbs(x, W=self.weight_, nx=self.n_values, mc_iter=mc_iter or self.mc_iter, *args, **kwargs)
 
 
     def transform(self, X):
@@ -159,8 +170,7 @@ class CDRBM(TransformerMixin):
         if persistent:
             X = X.copy()
 
-        if persistent:
-            pz = np.ones((n_samples, self.ndim_latents))
+        pz = np.ones((n_samples, self.ndim_latents))
         for _ in range(self.max_iter):
             # index = np.random.random(n_samples)<0.2
             for n in range(n_batchs):
@@ -185,12 +195,17 @@ class CDRBM(TransformerMixin):
                 eta *= 0.99
                 self.weight_ += eta * DW
 
-    def generate(self, mc_iter=30, start=None, n_samples=None):
-        if start:
-            x0 = start
-        else:
-            x0 = np.random.randint(self.n_values, size=rbm.n_features_)
-        x_, _, _ = self.mcmc(x0, mc_iter)
+    def generate(self, mc_iter=30, start=None, n_samples=None, *args, **kwargs):
+        x0 = np.random.randint(self.n_values, size=rbm.n_features_) if start is None else start
+        _, x_, _ = self.mcmc(x0, mc_iter, *args, **kwargs)
+        return x_
+
+
+    def impute(self, mc_iter=30, start=None, mask=None):
+        if mask is None:
+            raise ValueError('plz provide `mask`!')
+        start[mask] = np.median(start[~mask])
+        _, x_, _ = self.mcmc(start, mc_iter, mask=mask)
         return x_
 
 
@@ -224,13 +239,12 @@ class BinaryCDRBM(CDRBM):
     def inverse_transform(self, Z):
         return np.row_stack([np.random.random(self.n_features_) < expit(self.energy_x(z)) for z in Z])
 
-
     def generate(self, mc_iter=30, start=None, n_samples=None):
         if start:
             x0 = start
         else:
             x0 = bernoulli(0.5).rvs(size=self.n_features_)
-        x_, _, _ = self.mcmc(x0, mc_iter)
+        _, x_, _ = self.mcmc(x0, mc_iter)
         return x_
 
 
@@ -246,25 +260,32 @@ if __name__ == '__main__':
     # X = load_hanzi(ravel=True)
     # X = (X>50).astype(np.int_) + (X>100).astype(np.int_) + (X>150).astype(np.int_) + (X>200).astype(np.int_)
 
-
     rbm = CDRBM(ndim_latents=10, max_iter=300, mc_iter=2, persistent=False)
     # number of values taken by x, {0,1,...16}
-    rbm.n_values = 5 # currently, you have to set the attr. manually.
+    rbm.n_values = 17 # currently, you have to set the attr. manually.
     rbm.fit(X)
 
     # choose a sample
     x = X[4]
-    x_ = rbm.generate(mc_iter=50)
+    xc = x.copy()
+    mask = np.arange(64)<=32
+    xc[mask] = 0
+    xr = rbm.generate(mc_iter=50, start=xc)
+    x_ = rbm.impute(mc_iter=50, start=xc, mask=mask)
 
     import matplotlib.pyplot as plt
     fig = plt.figure()
-    ax = fig.subplots(1, 2)
-    size = 40, 40  # size of image
-    ax[0].imshow(x.reshape(size))
-    ax[0].set_title('A real image')
-    ax[1].imshow(x_.reshape(size))
-    ax[1].set_title('generated by CD')
-    for _ in ax: _.set_axis_off()
-    fig.suptitle("Image Generator (Test of CD-RBM)")
+    ax = fig.subplots(2, 2)
+    size = 8, 8  # size of image
+    ax[0,0].imshow(x.reshape(size))
+    ax[0,0].set_title('A real image')
+    ax[0,1].imshow(xr.reshape(size))
+    ax[0,1].set_title('Generated by the model')
+    ax[1,0].imshow(xc.reshape(size))
+    ax[1,0].set_title('A masked image')
+    ax[1,1].imshow(x_.reshape(size))
+    ax[1,1].set_title('Imputed by the model')
+    for _ in ax.flat: _.set_axis_off()
+    fig.suptitle("Demo of CD-RBM")
     plt.show()
 

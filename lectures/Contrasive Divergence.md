@@ -28,7 +28,7 @@ Problem: $Z$ dose not have a closed form/explict computation/ is intractable.
 
 But we have
 $$
-\frac{\partial p(x|\theta)}{\partial\theta}=  \frac{\partial \ln f(x;\theta)}{\partial\theta}-\int p(x|\theta) \frac{\partial \ln f(x;\theta)}{\partial\theta}\\
+\frac{\partial \ln p(x|\theta)}{\partial\theta}=  \frac{\partial \ln f(x;\theta)}{\partial\theta}-\int p(x|\theta) \frac{\partial \ln f(x;\theta)}{\partial\theta}\\
 =  \frac{\partial \ln f(x;\theta)}{\partial\theta}-E_{x\sim p(x|\theta)} \frac{\partial \ln f(x;\theta)}{\partial\theta}
 $$
 
