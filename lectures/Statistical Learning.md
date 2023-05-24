@@ -261,7 +261,7 @@ X_1      ... X_t      X_{t+1}      ...
 Y_1 ---> ... Y_t ---> Y_{t+1} ---> ...  
 ```
 
-HMM = laten value models of TS = times series of GMM
+HMM = latent variable models of TS = times series of GMM
 
 - Estimation: Forward-backward algorithm
 - Prediction: Vitabi algorithm (DP)
@@ -303,7 +303,10 @@ Structure:
 - Multi-layer NN
 - CNN/Deep learning
 - RNN/LSTM
-  
+
+## Other methods
+- Hierachical Model
+- Localization
 
 ## Ensemble methods
 
@@ -314,15 +317,21 @@ Structure:
 ## Software
 scikit-learn, statsmodels, R/rpy2, PyMC4, TensorFlow-Probability 
 
-## Summary
+## Summary ✌🏻
+<center>The Beginners' Magic Cube</center>
+
 ![](models.png)
 
+---
+
+1. What is a biLSTM (bidirection LSTM)?
 
 *References*
 
 1. J. Shao. Mathematical Statistics. Springer. 2003
 2. ESL
 3. Q. Ji. Probabilistic Graphical Models for Computer Vision. 2021.
+4. PETER MCCULLAGH WHAT IS A STATISTICAL MODEL? The Annals of Statistics. 2002, 30(5): 1225–1310
 
 
 
