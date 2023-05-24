@@ -10,9 +10,9 @@ But SDE:
 $$
 d X_t = \mu_t(X_t)d t+\sigma_t(X_t)d B_t
 $$
-where the first term of the rhs is drift, the second term is diffusion.
+where the first term of the rhs is **drift**, the second term is **diffusion**.
 
-For the odd property of Brown motion, we can not define directly $\omega \mapsto \frac{\mathrm{d} B(t,\omega)}{\mathrm{d} t}$. SDE has not rigid meaning of analysis. It should be understood as the following SIE:
+For the odd property of Brown motion, we can not define directly $\omega \mapsto \frac{\mathrm{d} B(t,\omega)}{\mathrm{d} t}$. SDE dose not have the strict meaning of analysis. It should be understood as the following SIE:
 $$
 X_t = X_0 + \int_0^t \mu_t(X_t)dt+ \int_0^t \sigma_t(X_t)dB_t
 $$
