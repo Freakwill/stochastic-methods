@@ -10,7 +10,7 @@ Core concepts:
 
 ## Statistical Model
 
-Statistical Model: a family of probability sp. $\mathcal{F}$ (hypothisis sp.)
+Statistical Model: a family/set of probability sp. $\mathcal{F}$ (hypothisis sp.)
 
 Parameterized form:
 $$
@@ -24,7 +24,7 @@ $\hat{\theta}(X)$: statistic of $X$, as an estimator for $\theta$, where $\hat{\
 
 The main method of estimation, MLE: $\max_\theta \log p(x|\theta)$
 
-for iid samples $x_1,\cdots x_N$,
+for the iid sample $x_1,\cdots, x_N$,
 
 $$
   \max_\theta \sum_i\log p(x_i|\theta)

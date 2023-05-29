@@ -33,7 +33,7 @@ $$
 and $Z(t)$ is cad, i.e. $E|Z(t+h)-Z(t)|^2\to 0,h\to0+$.
 
 
-1. Consider $f=\chi_{(t,s]}$
+1. Consider $f=\chi_{(t,s]}$ (note the compatibility with addition)
 $$
 I(f):=\int_0^1f(\nu)\mathrm{d} Z(\nu)=Z_s-Z_t.
 $$
