@@ -15,7 +15,6 @@ where $x_1,\cdots,x_T$ is unobservable, and
 - forward trajectory(Markov process): 
   $$q(x_1,\cdots,x_{T}|x_0))=\prod_tq(x_{t}|x_{t-1})$$
   
----
 
 $$
 ELBO:=\int q(x_{T}|x_{0}) \log \frac{p(x_{T})}{q(x_{T}|x_{0})}\mathrm{d}x_{T}\\
@@ -65,10 +64,9 @@ $$
 \Sigma(t)=\sigma^2(t)
 $$
 
-Design II: $p(x_{t-1}|x_{t})\sim N(\mu(t),\Sigma(t))$:
+Design II:
 $$
 \mu(t)=\frac{1}{\sqrt{\alpha_t}}x_t-\frac{\beta_t}{\sqrt{1-\bar\alpha_t}\sqrt{\alpha_t}}\hat{\epsilon}(x_t,t)\\
-\Sigma(t)=\sigma^2(t)
 $$
 
 
@@ -83,7 +81,7 @@ Under the design II:
 $$
 D_{KL} (q(x_{t−1}|x_t , x_0) \| p_θ (x_{t−1} |x_t))=\frac{1}{2\sigma_t^2}\frac{\beta_t^2}{(1-\bar{\alpha}_{t})\alpha_t^2}\|\hat{\epsilon}(x_t,t)-\epsilon_0\|^2
 $$
-
+where $x_{t}:=\sqrt{\bar{\alpha}_t} x_0 + \sqrt{1-\bar{\alpha}_t}\epsilon$.
 
 ### Algorithm
 
@@ -91,11 +89,13 @@ $$
 Loss:
 $$
 L=\sum_t L_t\\
-L_t\approx \sum_{\epsilon\sim N(0,1)}\|\epsilon-\hat{\epsilon}(x_{t},t)\|^2,(0\leq t<T)
+L_t\approx \sum_{q(x_t|x_0)}\|x_0-\hat{x}(x_{t},t)\|^2\\
+\approx \sum_{\epsilon\sim N(0,1)}\|\epsilon-\hat{\epsilon}(x_{t},t)\|^2,(0\leq t<T)
 $$
 where $x_{t}:=\sqrt{\bar{\alpha}_t} x_0 + \sqrt{1-\bar{\alpha}_t}\epsilon$.
 
-train NN $\hat\epsilon$ by data $\{(\hat{\epsilon}(x_{t}(x_{0,i},\epsilon_{il}),t),\epsilon_{il}),\epsilon_{il}\sim N(0,1),l=1,\cdots, L\}$ with size of $NL$ for each $t$。
+I. train NN $\hat{x}$ by data $\{(\hat{x}(x_{t}(x_{0,i},\epsilon_{il}),t),x_{0,i}),x_{0,i}\sim N(0,1),l=1,\cdots, L\}$ with size of $NL$ for each $t$. (denoising autoencoder/self-supervised learning)
+II. train NN $\hat\epsilon$ by data $\{(\hat{\epsilon}(x_{t}(x_{0,i},\epsilon_{il}),t),\epsilon_{il}),\epsilon_{il}\sim N(0,1),l=1,\cdots, L\}$ with size of $NL$ for each $t$.
 
 
 ---

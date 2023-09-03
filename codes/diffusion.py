@@ -67,7 +67,7 @@ def gen(n_samples, n_features, nns):
 
 if __name__ == '__main__':
 
-    nns = MLPRegressor(hidden_layer_sizes=(12, 5), warm_start=True)
+    nns = MLPRegressor(hidden_layer_sizes=(10, 5), warm_start=True)
 
     from sklearn.datasets import load_digits
     digists = load_digits()
