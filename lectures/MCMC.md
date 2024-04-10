@@ -1,4 +1,5 @@
 # MCMC
+
 [TOC]
 
 ## Markov chain
@@ -71,14 +72,19 @@ set proposal proba $q(y|x)$
       x_t, & 1-a
    \end{cases}$$
 
-*Remark* An alternation of accept proba $a=\frac{1}{1+\frac{q(y|x)p(x)}{q(x|y)p(y)}}$ (Boltzmann algo.)
+*Remark* An alternation of accept proba $a(x,y)=\frac{1}{1+\frac{q(y|x)p(x)}{q(x|y)p(y)}}$ (Boltzmann algo.)
 
 *Remark* $p(y) \ll q(y|x)$ for all $x$
+
+- **Independant chain M-H**: $q(y|x)=q(y)$, and $a(x,y):=\min\{\frac{p(y)q(x)}{p(x)q(y)},1\}$
+- **Random walk**: $q(y|x)=q(y-x)=q(x-y)$, and $a(x,y):=\min\{\frac{p(y)}{p(x)},1\}$
+- **Gibbs sampling**: $q(y|x)=p(y|x)$, $a(x,y)=1$
+- **Langevin algo./dynamics**: $y=x+\frac{\sigma^2}{2}\nabla\log p(x)+\sigma\epsilon,\epsilon\sim N(0,1)$
 
 ### Variants of M-H algo.
 
 #### Gibbs sampling
-Proposal distr.: $q(y|x)=p(y|x)$ (only for $y$)
+Proposal distr.: $q(y|x)=p(y|x)$
 or $q((x',y')|(x,y))=p(x'|y')p(y'|x)p(x|y)$ for $(x,y)$
 
 *Gibbs sampling* to simulate $p(x,y)$
@@ -107,6 +113,8 @@ set proposal proba $q(|\cdot|)$
       x_t, & 1-a
    \end{cases}$$
 
+![](mh.png)
+
 #### independent chain
 Proposal distr.: $q(y|x)=q(y)$
 
@@ -114,6 +122,18 @@ accept proba: $a=\min \{\frac{p(y)q(x)}{p(x)q(y)},1\}$
 
 #### Langevin algo.
 Proposal distr. $q(y|x)=x+\frac{\sigma^2}{2}\nabla \log p(x)+\sigma\epsilon,\epsilon\sim N(0,1)$
+
+#### Hit-and-Run
+
+*Algo*
+1. init $x_0\in\R^n$
+2. loop $t=0,1,\cdots$
+   - $d_t\sim S^{n-1}$
+   - Let $\Omega:=\{\lambda|x_t+\lambda d\}$
+   - $\lambda\sim g(\lambda|d_t,x_t),\lambda\in\Omega$
+   - $x'=x+\lambda d$, $x_{t+1}=\begin{cases}x' & a(x'|x_t)\\
+   x_t, & else \\
+   \end{cases}$
 
 ## RJ MCMC
 

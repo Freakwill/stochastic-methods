@@ -3,6 +3,9 @@
 """
 Transfer Component Analysis
 
+PCA -- LDA d.r.
+TCA -- ?
+
 *ref.*
 王晋东 迁移学习导论
 """
