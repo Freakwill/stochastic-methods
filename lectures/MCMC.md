@@ -90,8 +90,8 @@ or $q((x',y')|(x,y))=p(x'|y')p(y'|x)p(x|y)$ for $(x,y)$
 *Gibbs sampling* to simulate $p(x,y)$
 
 0. initialize $y_0$
-1. $x_{t}\sim P(x|y_{t-1})$
-2. $y_{t}\sim P(y|x_t)$
+1. $x_{t}\sim P(x|y_{t-1})$, or $P(x,y_{t-1})$
+2. $y_{t}\sim P(y|x_t)$, or $P(x_{t},y)$
 
 $(x_t,y_t)\to p(x,y), x_t\to p(x), y_t\to p(y)$
 
@@ -303,9 +303,13 @@ Gibbs sampling
 until it converges to $p(c,\theta|x)$​​
 
 
-
 *References*
 
 1. Christian P. Robert, George Casella. Monte Carlo Statistical Methods. Springer, 2004.
 2. 刘金山 夏强, 基于MCMC算法的贝叶斯统计方法, 科学出版社, 2016.
 3. CHRISTOPHE ANDRIEU et. al. An Introduction to MCMC for Machine Learning. Machine Learning, 50, 5–43, 2003.
+
+
+*Homework*
+
+- Transition Kernel of Boltzman algo. satisfies details balance condition.
