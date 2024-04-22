@@ -16,7 +16,7 @@ Notations:
 
 ## Model
 ### Distribution/partition function
-data distr.:
+model distr.:
 $$
 p(x|\theta)=\frac{f(x;\theta)}{Z(\theta)}
 $$
@@ -24,9 +24,10 @@ where $Z(\cdot)$ is the *partition function*.
 
 Problem: $Z$ dose not have a closed form/explict computation/ is intractable.
 
-*Remark* joint distr. of MN
+*Example* RBM; joint distr. of Markov Net; PoE model
 
-But we have
+We have
+*Fact.*
 $$
 \frac{\partial \ln p(x|\theta)}{\partial\theta}=  \frac{\partial \ln f(x;\theta)}{\partial\theta}-\int p(x|\theta) \frac{\partial \ln f(x;\theta)}{\partial\theta}\\
 =  \frac{\partial \ln f(x;\theta)}{\partial\theta}-E_{x\sim p(x|\theta)} \frac{\partial \ln f(x;\theta)}{\partial\theta}
@@ -52,6 +53,9 @@ $$
 $$
 where $X^{k}$ (fantasy samples) represents the training data transformed using $k$ cycles of MCMC, such that $X^{0} ≡ X, X^{\infty} \sim p(x|\theta)$.
 
+*k-CD algo.*
+$\Delta \theta \leftarrow \eta\langle \frac{\partial \ln f(x;\theta)}{\partial\theta} \rangle_{X^{0}}-\langle \frac{\partial \ln f(x;\theta)}{\partial\theta} \rangle_{X^{k}}$
+
 *Remark.* Let $H(\theta)=H(p^0,p_\theta)$,
 $$
 \frac{\partial H(\theta)}{\partial\theta}=E_{x\sim p^0}\frac{\partial \ln f(x;\theta)}{\partial\theta}-E_{x\sim p_\theta}\frac{\partial \ln f(x;\theta)}{\partial\theta}\\
@@ -65,6 +69,7 @@ $$
 \approx\langle \frac{\partial E(x;\theta)}{\partial\theta} \rangle_{X^{0}}-\langle \frac{\partial E(x;\theta)}{\partial\theta} \rangle_{X^{\infty}}\\
 \approx \langle \frac{\partial E(x;\theta)}{\partial\theta} \rangle_{X^{0}} - \langle \frac{\partial E(x;\theta)}{\partial\theta} \rangle_{X^{k}}
 $$
+
 
 *Remark.* Samples cannot be drawn directly from $p(x; \Theta)$ for the partition function, but we can use many cycles of  MCMC sampling to transform our training data (drawn from the target distribution) into data drawn from the proposed distribution Draw samples from $p$ by MCMC. The transformation only involves calculating likelihood ratio $\frac{f(x';\theta)}{f(x;\theta)}$ (without partition funciton).
 
@@ -85,9 +90,9 @@ $$
 - $p^k$: fabulation distr. ($k$-step of MCMC from $p_d$)
 - $p=p^\infty$: model distr.
 
-*Fact.* Assume $\frac{D_{KL}(p^k\|p)}{\partial p^k}$ is small
+*Fact.* Assume $\frac{D_{KL}(p^k\|p)}{\partial p^k}$ is small,
 $$
-\frac{\partial CD_k}{\partial\theta} \approx \frac{\partial J(\theta)}{\partial\theta} + \frac{\partial D_{KL}(p^k\|p)}{\partial p^k}\frac{\partial p^k}{\partial\theta}\\
+\frac{\partial CD_k}{\partial\theta} = \frac{\partial J(\theta)}{\partial\theta} + \frac{\partial D_{KL}(p^k\|p)}{\partial p^k}\frac{\partial p^k}{\partial\theta}\\
  \approx \frac{\partial J(\theta)}{\partial\theta}
 $$
 where $J=-\bar{l}$.
@@ -171,6 +176,11 @@ input $X$
 3. update $W$
 4. repeat 2-3
 
+*General Setting*
+$x^{(j)}=0,1$
+
+$p(x^{(j)}|x^{(-j)})\sim e^{w\cdot x^{(j)}}$.
+
 
 ### RBM
 
@@ -220,8 +230,8 @@ $$
 ==>
 $$
 \frac{\partial\bar{l}}{\partial\theta}=\langle\frac{\partial E}{\partial\theta}\rangle_{p(z|x), X^0}-\langle\frac{\partial E}{\partial\theta}\rangle_{p(x,z)}\\
-\approx\langle\frac{\partial E}{\partial\theta}\rangle_{p(z|x), X^0}-\langle\frac{\partial E}{\partial\theta}\rangle_{p(z|x), X^1}\text{~ if P(z|x) is easy to compute}\\
-\approx\langle\frac{\partial E}{\partial\theta}\rangle_{Z\sim p(z|x), X^0}-\langle\frac{\partial E}{\partial\theta}\rangle_{Z\sim p(z|x), X^1}
+\approx\langle\frac{\partial E}{\partial\theta}\rangle_{p(z|x), X^0}-\langle\frac{\partial E}{\partial\theta}\rangle_{p(z|x), X^1}~\text{if P(z|x) is easy to compute}\\
+\approx\langle\frac{\partial E}{\partial\theta}\rangle_{Z\sim p(z|x), X^0}-\langle\frac{\partial E}{\partial\theta}\rangle_{Z\sim p(z|x), X^1}~\text{else}
 $$
 
 

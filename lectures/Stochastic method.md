@@ -112,6 +112,14 @@ $$
 
 *Advice.* $\mathrm{supp}p$ contains $A$ compactly.
 
+### simulating a distr. by IS
+
+*Algo.*
+Return $x_i\sim p$
+1. $\tilde{x}_i\sim q$
+2. $\rho_i=\frac{p(x_i)}{q(x_i)}$ (normalized)
+3. draw $x_i$ from $\tilde{x}_i$ using weighs $\rho_i$
+
 ## MCMC
 
 *Principle* MCMC(p):

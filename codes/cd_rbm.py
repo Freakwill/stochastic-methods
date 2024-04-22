@@ -105,11 +105,9 @@ class CDRBM(TransformerMixin):
         self.bias = bias
         self.n_values = 2
 
-
     def init(self, X):
         n_samples, self.n_features_ = X.shape
         self.weight_ = np.zeros((self.n_features_+1, self.ndim_latents+1))
-
 
     @property
     def W_(self):
@@ -123,7 +121,6 @@ class CDRBM(TransformerMixin):
     def beta_(self):
         return self.weight_[-1, :-1]
 
-
     def denergy(self, x, z):
         return np.block([[np.outer(x, z), x[:,None]], [z, 1]])
 
@@ -133,10 +130,8 @@ class CDRBM(TransformerMixin):
     def energy_z(self, x):
         return np.dot(x, self.W_)+self.beta_
 
-
     def mcmc(self, x, mc_iter=None, *args, **kwargs):
         return _gibbs(x, W=self.weight_, nx=self.n_values, mc_iter=mc_iter or self.mc_iter, *args, **kwargs)
-
 
     def transform(self, X):
         return np.apply_along_axis(lambda x: np.random.random(self.ndim_latents) < self.energy_z(x), 1, X)
@@ -147,7 +142,6 @@ class CDRBM(TransformerMixin):
             rv = np.random.random(p)
             return np.apply_along_axis(lambda x:np.where(x)[0][0], 1, (rv[:, None] < ps))
         return np.apply_along_axis(_it, 1, Z)
-
 
     def fit(self, X):
         self.init(X)
@@ -199,7 +193,6 @@ class CDRBM(TransformerMixin):
         x0 = np.random.randint(self.n_values, size=rbm.n_features_) if start is None else start
         _, x_, _ = self.mcmc(x0, mc_iter, *args, **kwargs)
         return x_
-
 
     def impute(self, mc_iter=30, start=None, mask=None):
         if mask is None:

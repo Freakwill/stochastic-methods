@@ -53,7 +53,7 @@ $$
 $$
 
 
-### M-H Algo.
+### Metropolis-Hastings Algo.
 
 MCMC algo. for target distr. $p(x)$
 
@@ -72,12 +72,14 @@ set proposal proba $q(y|x)$
       x_t, & 1-a
    \end{cases}$$
 
+*Remark* M-H is an accept-reject precedure for Markov chain.
+
 *Remark* An alternation of accept proba $a(x,y)=\frac{1}{1+\frac{q(y|x)p(x)}{q(x|y)p(y)}}$ (Boltzmann algo.)
 
 *Remark* $p(y) \ll q(y|x)$ for all $x$
 
-- **Independant chain M-H**: $q(y|x)=q(y)$, and $a(x,y):=\min\{\frac{p(y)q(x)}{p(x)q(y)},1\}$
-- **Random walk**: $q(y|x)=q(y-x)=q(x-y)$, and $a(x,y):=\min\{\frac{p(y)}{p(x)},1\}$
+- **Independant chain M-H**: $q(y|x)=q(y)$, and $a(x,y):=\min\{\frac{p(y)q(x)}{p(x)q(y)},1\}$ (almost equiv. to AR method)
+- **Random walk(Metropolis algo.)**: $q(y|x)=q(y-x)=q(x-y)$, and $a(x,y):=\min\{\frac{p(y)}{p(x)},1\}$
 - **Gibbs sampling**: $q(y|x)=p(y|x)$, $a(x,y)=1$
 - **Langevin algo./dynamics**: $y=x+\frac{\sigma^2}{2}\nabla\log p(x)+\sigma\epsilon,\epsilon\sim N(0,1)$
 
@@ -123,6 +125,8 @@ accept proba: $a=\min \{\frac{p(y)q(x)}{p(x)q(y)},1\}$
 #### Langevin algo.
 Proposal distr. $q(y|x)=x+\frac{\sigma^2}{2}\nabla \log p(x)+\sigma\epsilon,\epsilon\sim N(0,1)$
 
+![](rw-ld.jpg)
+
 #### Hit-and-Run
 
 *Algo*
@@ -137,22 +141,39 @@ Proposal distr. $q(y|x)=x+\frac{\sigma^2}{2}\nabla \log p(x)+\sigma\epsilon,\eps
 
 ## RJ MCMC
 
-target distr: $p(k,x_k)\propto p_k(x_k)\pi_k$ (mixed model of $p_k(x_k)$)
+Background: **model selection**, select the optimal model, for data $D$ from
+$$
+p_k(x|\theta_k),k=1,\cdots,K
+$$
+Problem: to simulate $p(k,\theta_k|D)$.
 
-param. sp.: $\bigcup_k(\{k\}\times \mathcal{X}_k)$
+Simulation Model:
+- Target distr: $p(k,x_k)\propto p_k(x_k)\pi_k$ (mixed model of $p_k(x_k)$), $d_k:=\dim x_k$
+- Sample sp.: $\bigcup_k(\{k\}\times \mathcal{X}_k)$
 
 *RJMCMC algo.*
-
+Setting proposal distr. $q(u|x_k,k,k')$ and jump distr. $j$
 1. init. $k, x_k$
 2. select a model: $k'\sim j(k'|k)$ (jump)
-3. sample $u\sim q(u|x_k,k,k')$
+3. sample $u\sim q(u|x_k,k,k')$ ($u$ matches the dim of $x_k$)
 4. compute acceptance proba.
   $$
   \alpha = \min\{JA, 1\}\\
-  J = \det Jg(x_k,u), A=\frac{pi_{k'}p(x'_{k'}|k)}{\pi_{k}p(x'_{k'}|k)}\frac{P(x_k,u|x'_{k'},u')}{P(x'_{k'},u'|x_k,u)} 
+  J = \det Jg(x_k,u), A=\frac{\pi_{k'}p(x'_{k'}|k)}{\pi_{k}p(x'_{k'}|k)}\frac{P(x_k,u|x'_{k'},u')}{P(x'_{k'},u'|x_k,u)} 
   $$
+where 
+$g:x_k, u\mapsto x'_{k'}, u'$: 1-1, DBC:$d_k+\dim u = d_{k'}+ \dim u'=d$
 
-$x_k, u\mapsto x'_{k'}, u'$: 1-1, $d_k+\dim u = p_{k'}+ \dim u'$
+Selecting proba.: $\hat p(k)\sim \sharp\{k_t=k\}$.
+
+### Carlin-Chib Algo.
+
+$p(k,\theta)=p(\theta_k|k)p(u|\theta_k,k)p(k)$
+
+*Metropolized Carlin-Chib Algo.*
+1. $k^*,\theta\sim q(k^*,\theta|k,\theta)$
+2. accept $k^*,\theta$ by $\alpha=\min\{\frac{p(k^*,\theta^*)q(k,\theta|k^*,\theta^*)}{p(k,\theta)q(k^*,\theta^*|k,\theta)},1\}$
+
 
 ## Missing data model
 
@@ -169,8 +190,8 @@ in EM algo, we use likelihood $Q(\theta',\theta):=\int p(z|x,\theta')\ln p(x,z|\
 
 1. initalize $\theta^{(0)}$
 
-2. $z_i^{(t+1)}|x,\theta^{(t)} \sim p(z_i|z_{-i},x,\theta^{(t)})$ i=1,2,...​​​
-3. $\theta^{(t+1)}|x, z^{(t+1)}\sim p(\theta^{(t+1)}|x, z^{(t+1)})$
+2. $z_i^{(t+1)}|x,\theta^{(t)} \sim p(z_i|z_{-i},x,\theta^{(t)})$ i=1,2,...​​​ (as E step in EM)
+3. $\theta^{(t+1)}|x, z^{(t+1)}\sim p(\theta^{(t+1)}|x, z^{(t+1)})$ (as M step in EM)
 
 4. until it converges to  $p(\theta|x)$, (include $p(z,\theta|x)$,$p(z|x)$)
 
@@ -211,8 +232,10 @@ output $\mu$
 
 until it converges to $p(z,\mu|x)$ or $p(\mu|x)$​​
 
+## Sequ
 
-## Semi-supervised learning
+
+## Application
 
 ### Model
 
@@ -241,7 +264,6 @@ Gibbs sampling with priori distr. $\pi(\theta)$
 2. $\theta^{(t+1)}|x,y,x', z^{(t+1)}\sim P(\theta|x_1,y,x_0, z^{(t+1)})\sim P(x_1,y,x_0, z^{(t+1)}|\theta)\pi(\theta)\sim P(x_1,y|\theta)P(x_0, z^{(t+1)}|\theta)\pi(\theta)$
 
 until it converges to $p(z,\theta|x,y,x')$ or $p(\theta|x,y,x')$​​
-
 
 
 ### Example
