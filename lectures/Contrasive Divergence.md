@@ -49,7 +49,7 @@ $$
 $$
 \frac{\partial \bar{l}(\theta)}{\partial\theta}= \frac{1}{N}\sum_i \frac{\partial \ln f(x_i;\theta)}{\partial\theta}-\int p(x;\theta) \frac{\partial \ln f(x;\theta)}{\partial\theta}\\
 \approx\langle \frac{\partial \ln f(x;\theta)}{\partial\theta} \rangle_{X^{0}}-\langle \frac{\partial \ln f(x;\theta)}{\partial\theta} \rangle_{X^{\infty}}\\
-\approx \langle \frac{\partial \ln f(x;\theta)}{\partial\theta} \rangle_{X^{0}}-\langle \frac{\partial \ln f(x;\theta)}{\partial\theta} \rangle_{X^{k}}
+\approx \langle \frac{\partial \ln f(x;\theta)}{\partial\theta} \rangle_{X^{0}}-\langle \frac{\partial \ln f(x;\theta)}{\partial\theta} \rangle_{X^{k}}  ~~(\text{CD-k update})
 $$
 where $X^{k}$ (fantasy samples) represents the training data transformed using $k$ cycles of MCMC, such that $X^{0} ≡ X, X^{\infty} \sim p(x|\theta)$.
 
@@ -80,7 +80,7 @@ $q(x|y)p(y)=q(y|x)p(x)$
 a possible proposed distr.: $q(y|x)\sim r(x,y)e^{\frac{1}{2}(E(y)-E(x))}$, where $r(x,y)=r(y,x)$.
 
 ### Contrastive Divergence
-*Definition*
+*Definition* **CD objective**:
 $$
 CD_k:=D_{KL}(p_d\|p)-D_{KL}(p^k\|p); \\ 
 CD:=CD_1
@@ -92,10 +92,9 @@ $$
 
 *Fact.* Assume $\frac{D_{KL}(p^k\|p)}{\partial p^k}$ is small,
 $$
-\frac{\partial CD_k}{\partial\theta} = \frac{\partial J(\theta)}{\partial\theta} + \frac{\partial D_{KL}(p^k\|p)}{\partial p^k}\frac{\partial p^k}{\partial\theta}\\
- \approx \frac{\partial J(\theta)}{\partial\theta}
+\frac{\partial CD_k}{\partial\theta} = \text{CD-update} + \frac{\partial D_{KL}(p^k\|p)}{\partial p^k}\frac{\partial p^k}{\partial\theta}\\
+ \approx \text{CD-update}
 $$
-where $J=-\bar{l}$.
 
 *Hinton CD algo.*
 Input $X^0$
