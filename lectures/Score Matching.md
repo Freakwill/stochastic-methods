@@ -5,9 +5,9 @@ Notations:
 - $p$: true distr.
 - $p(x|\theta)$: model/hypothisis distr.
 - $\psi(x)=\frac{\partial\log p(x)}{\partial x}=\frac{\nabla_x p(x)}{p(x)}$: *score function* of $p(x)$
-- $E(x)$: energy function, $\psi=\nabla E$
+- $E(x)$: energy function, $p\sim e^E$
 
-score function does not depend on partition function, i.e. $\psi(x)=\frac{\nabla f(x)}{f(x)}$ where $p(x)=\frac{f(x)}{Z}$
+score function does not depend on partition function, i.e. $\psi(x)=\frac{\nabla f(x)}{f(x)}=\nabla E$ where $p(x)=\frac{f(x)}{Z}$
 
 ## Assumption
 1. $\mathcal{X}=\R^n$ (open subset of $\R^n$)
@@ -19,13 +19,12 @@ score function does not depend on partition function, i.e. $\psi(x)=\frac{\nabla
 
 ### *Explicit score matching(ESM)*
 
+*Definition*
 $$
-J_{ESM}(\theta) := \frac{1}{2}E\|\psi(x|\theta)-\frac{\partial \log p(x)}{\partial x}\|^2
+J_{ESM}(\theta) := \frac{1}{2}\mathbb{E}_{x\sim p}\|\psi(x|\theta)-\frac{\partial \log p(x)}{\partial x}\|^2
 $$
 
-*Remark.* ESM=the diff of the score of the model distr. and the that of true distr. 
-
-*Remark.* ESM is the Fisher div. denoted by $D_F(p,p_\theta)$.
+*Remark.* ESM is the **Fisher div.** denoted by $D_F(p,p_\theta)$.
 
 *Fact.* $J(\theta) = 0 \iff  p(x|\theta)=p(x)$ where $p(x)>0$
 
@@ -45,12 +44,14 @@ $$
 
 
 ## SM Algo
-task:
+
+task/ERM:
 $$
 \min J_{ISM}(\theta)\approx \sum_i ( \frac{1}{2}\|\psi(x_i|\theta)\|^2+\sum_j\frac{\partial \psi^{(j)}(x_i|\theta)}{\partial x^{(j)}})\\
-\approx \sum_i ( \frac{1}{2}\|\nabla E(x_i|\theta)\|^2+\Delta E (x_i|\theta))
+\approx \sum_i ( \frac{1}{2}\|\nabla E(x_i|\theta)\|^2+\Delta E (x_i|\theta)).
 $$
-by GD
+
+by GD,
 
 $\partial_\theta J = \sum_i(\nabla  E\cdot \nabla \partial_\theta E +\Delta\partial_\theta E)$
 
@@ -105,7 +106,12 @@ Result: SME = MLE
 
 Energy of Model: $E(x)=\sum_k G(W_kx)$
 
-==> ...Your homework
+==> 
+
+$$
+G = g(XW), G'=g'(XW)\\
+J(W) = \frac{1}{N}1_N(G' \{W_k.^2\} + (GW^T).^21_p/2)
+$$
 
 ### Laten Var. Models
 
@@ -144,6 +150,36 @@ that is, train NN $x\mapsto W^T\mathrm{softmax}(Wx+b)+c$ by data $\{x_{ij},z_i\}
 
 For the code see `codes/dsm.py`
 
+## Relation with other algo/models
+
+## SM ~ ML
+**Theorem** Under regularization conditions.
+$$
+\frac{d}{dt}D_{KL}(p_t\|q_t) =-\frac{1}{2}D_F(p_t\|q_t)\\
+\frac{d}{dt}D_{KL}(p_t\|q_t)|_{t=0} =-\frac{1}{2}D_F(p\|q)
+$$
+where $p_t$ is the convolution of $p$ and $N(0,t)$. Specially,
+$$
+\frac{d}{dt}H(p_t) =-\frac{1}{2}J(p_t)
+$$
+
+*Interpretation* While ML aims to minimize the KL divergence
+directly, SM seeks to eliminate its derivative inthe scale space at $t = 0$. SM looks for stability, where the optimal parameter $θ$ leads to least changes in the KL divergence between the two models when a smallamount of noise ispresent in the training data, while ML pursues extremity of the KL divergence. It is known that MLE is sensitive to noisy training data, which may give rise to many false extreme values, yet SM may be more robust to small perturbation in training data.
+
+### SM ~ CD ~ PL
+
+*Fact*
+$$
+j(\theta) = \nabla_\theta J_{SM}
+$$
+where $j(\theta)\approx \nabla_\theta J_{CD}(θ', θ, x_t),\theta'\approx\theta$ under LD that $\sigma^2\to 0$. Hence SM == deterministic CD
+
+*Fact*
+$$
+\nabla_\theta J_{PL} \approx E_x \nabla \log p(x|\theta) -E_iE_{x_i|x_{\bar{i}}}\nabla \log p(x|\theta)
+$$
+
+
 ## Generalized SM(GSM)
 
 ### General form
@@ -157,14 +193,15 @@ $$
 Generalized Fisher info.$H_{F}(p)=\int p(\frac{Lp}{p})^2$
 and its cross version $H_{F}(p,q)=\int p(\frac{Lp}{q})^2$
 
-$L:F\to F^n$ is linear and complete, where $F$ is a family of PDFs.
-complete: $\frac{Lp}{p}=\frac{Lq}{q}\iff p=q$
+*Completeness*: $\frac{Lp}{p}=\frac{Lq}{q}\iff p=q$
+
+Assume that $L:F\to F^d$ is linear and complete, where $F$ is a family of PDFs.
 
 *Example 1* $L=\nabla$ in standard SM
 
-*Example 2* $Mp=(\int_{x_j}p(x),j=1,\cdots,d)$, we have
+*Example 2* marginalization operator $Mp:=\{\int_{x_j}p(x),j=1,\cdots,d\}$, we have
 $$
-GSM_M=E\sum_j\int (1-\frac{1}{q(x_j|x_{\hat{j}})})^2 dx_j 
+GSM_M:=E\sum_j\int (1-\frac{1}{q(x_j|x_{\hat{j}})})^2 dx_j 
 $$
 
 ### extension of SM

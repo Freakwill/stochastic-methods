@@ -16,12 +16,15 @@ def logit(x, lb=0, ub=255):
 
 def normalize(X, axis=1):
     # normalize a matrix
-    if axis == 1:
-        return X / X.sum(axis=1)[:,None]
-    elif axis == 0:
-        return X / X.sum(axis=0)
+    if X.ndim == 1:
+        return X / X.sum()
     else:
-        raise ValueError('`axis` must be 0 or 1!')
+        if axis == 1:
+            return X / X.sum(axis=1)[:,None]
+        elif axis == 0:
+            return X / X.sum(axis=0)
+        else:
+            raise ValueError('`axis` must be 0 or 1!')
 
 def exp_normalize(X, axis=1):
     return normalize(np.exp(X), axis=axis)
@@ -248,3 +251,22 @@ def make_grid(X, h, w, r, c, v=0):
     for k in range(1, c):
         X = np.insert(X, w*k, v, axis=1)
     return X
+
+
+def show_crd(ax, Z, y, colors='rbgymkc', markers='o+x*sd^v<>', centers=None, *args, **kwargs):
+    """plot the crds
+    
+    Args:
+        ax: axex
+        Z (array): coords
+        y_ (array): labels of the coords
+    """
+    
+    labels = np.unique(y)
+    for k, c, m in zip(labels, colors, markers):
+        ax.scatter(Z[y==k][:,0], Z[y==k][:,1], color=c, marker=m, *args, **kwargs)
+
+    if centers is None: return
+    for cc, c, m in zip(centers, colors, markers):
+        ax.scatter(cc[0], cc[1], color='k', marker=m)
+

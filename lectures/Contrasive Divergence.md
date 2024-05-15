@@ -2,7 +2,7 @@
 [TOC]
 
 ## Abstract
-an approximate Maximum-Likelihood learning algorithm  proposed by G. Hinton(2002) for energy-based models or Markov networks
+An approximate Maximum-Likelihood learning algorithm  proposed by G. Hinton(2002) for energy-based models or Markov networks
 
 
 CD is a general MCMC gradient ascent learning algorithm particularly well suited to learning Product of Experts (PoE)

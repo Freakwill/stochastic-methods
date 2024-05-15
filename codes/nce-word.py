@@ -26,8 +26,10 @@ def r(x, nu=1):
 def similarity(w, c, wv):
     return np.sum(word_vec(w, wv) * context_vec(c, wv), axis=-1)
 
+
 def word_vec(w, wv):
     return wv[w]
+
 
 def context_vec(c, wv):
     if c.ndim==2:
@@ -97,7 +99,7 @@ def _fit(W, C, Wn, Cn, nu=2):
     return wv, a
 
 
-def fit(d, min_count=None, smoothing_coef=1):
+def fit(d, min_count=None, smoothing_coef=0.5):
     # d: corpus, List[str]
     global vocab, n_vocab, p_w, p_c, context
     nu = 2
@@ -109,7 +111,8 @@ def fit(d, min_count=None, smoothing_coef=1):
         for k, dk in enumerate(d[size_window:-size_window])])
     w, c = w_c[:, 0], w_c[:, 1:]
     count_w = np.array([np.sum(w==i) for i in range(n_vocab)])
-    p_w = normalize(count_w+ smoothing_coef)
+    p_w = count_w + smoothing_coef
+    p_w = normalize(p_w)
     context = np.unique(c, axis=0)
     n_context = len(context)
     count_c = np.array([np.sum(np.all(context==c, axis=1)) for c in context])

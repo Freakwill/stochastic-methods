@@ -24,22 +24,24 @@ Sigma = np.array([[1.0, 0.5], [0.5, 2]])
 Lambda =LA.inv(Sigma)
 c = 0.5 * np.log(LA.det(Lambda)) - np.log(2*np.pi)
 pd = multivariate_normal([0, 0], Sigma)  # data distr.
-pn = multivariate_normal([0, 0], [[1, 0], [0, 1]]) # noise distr.
 
 Xd = pd.rvs(size=Td)
-Xn = pn.rvs(size=Tn)
-
 
 # MLE
 cov = np.cov(Xd, rowvar=0)
 per = LA.inv(cov)
+
+pn = multivariate_normal([0, 0], cov) # noise distr.
+Xn = pn.rvs(size=Tn)
+
 
 def G(x, L, c):
     # log-likelihood ratio
     Lx = np.dot(L, x)
     return -0.5* np.dot(x, Lx) + c - pn.logpdf(x)
 
-C = (np.ones((2,2))-0.5*np.eye(2))
+C = (2*np.ones((2,2))-0.5*np.eye(2))
+
 def g(x, L, c):
     # derivation of G wrt L
     return - np.outer(x, x) * C
@@ -59,6 +61,8 @@ def DJ(X, Y, L, c):
     return DJ_L, np.mean(H) - np.mean(K) * nu
 
 
+n_iter = 500
+
 def fit(Xd, Xn):
     # do NCE with Xd, Xn
     Lambda_ = np.eye(2)
@@ -66,10 +70,12 @@ def fit(Xd, Xn):
     errors = {'Lambda':[],
     'c':[]
     }
-    for k in range(1000):
-        DJ_L, DJ_c = DJ(Xd, Xn, L, c)
-        Lambda_ += 0.1 * 0.99**k * DJ_L
-        c_ += 0.1 * 0.99**k * DJ_c
+    alpha = 0.01
+    for k in range(n_iter):
+        DJ_L, DJ_c = DJ(Xd, Xn, Lambda_, c)
+        Lambda_ += alpha * DJ_L
+        c_ += alpha * DJ_c
+        alpha *= 0.99
         errors['Lambda'].append(LA.norm(Lambda_-Lambda, 'fro'))
         errors['c'].append(abs(c_-c))
     return errors
@@ -81,7 +87,7 @@ fig = plt.figure()
 ax = fig.add_subplot(121)
 ax.plot(errors['Lambda'])
 e = LA.norm(Lambda-per)
-ax.plot([1, 1000], [e, e], '--')
+ax.plot([1, n_iter], [e, e], '--')
 ax.set_title('estimates of Lambda')
 ax.set_xlabel('iteration')
 ax.legend(('NCE', 'MLE'))

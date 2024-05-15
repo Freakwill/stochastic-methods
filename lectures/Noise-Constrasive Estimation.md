@@ -57,7 +57,7 @@ $$
 for NCE,
 $g=(\nabla_\alpha G, 1)^T$ and
 $$
-\nabla J_T =(\frac{1}{N_d}\sum (1-h(x^{(d)}_i))\nabla_\alpha G(x^{(d)}_i) + \nu\frac{1}{N_n}\sum h(x^{(n)}_i) \nabla_\alpha G(x^{(n)}_i), \\1-\frac{1}{N_d}\sum (h(x^{(d)}_i)) + \nu\frac{1}{N_n}\sum h(x^{(n)}_i) )
+\nabla J_T =(\frac{1}{N_d}\sum (1-h(x^{(d)}_i))\nabla_\alpha G(x^{(d)}_i) + \nu\frac{1}{N_n}\sum h(x^{(n)}_i) \nabla_\alpha G(x^{(n)}_i), \\1-\frac{1}{N_d}\sum h(x^{(d)}_i) + \nu\frac{1}{N_n}\sum h(x^{(n)}_i) )
 $$
 
 *Fact.*
