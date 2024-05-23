@@ -132,6 +132,31 @@ $$
 
 $D J(E)=0 \iff p=p_0 \nu e^{E}$
 
+## Conditional NCE
+
+0/1-classifier:
+$$
+p(x,y|1)=p_d(x)p_c(y|x)\\
+p(x,y|0)=p_d(y)p_c(x|y)
+$$
+
+data:
+```
+X, Y, 1
+Y, X, 0
+```
+
+**CNCE loss**:
+$$
+J(\theta)=J(G(\theta))=E \log(1+e^{-G})\\
+G(x,y;\theta)=\log\frac{\phi(x_1|\theta)p_c(x_2|x_1)}{\phi(x_2|\theta)p_c(x_1|x_2)}
+$$
+
+*Fact* Neg conditional log-likelihood of the 0/1-classifier is the empirical version of CNCE loss
+
+*Fact*
+$G^*=\argmin J(G) \iff G^* = \log \frac{p_d(x_1|\theta)p_c(x_2|x_1)}{p_d(x_2|\theta)p_c(x_1|x_2)}$
+
 ## Variational NCE
 
 *Fact.*
@@ -162,6 +187,7 @@ Output $\theta$
    - M: $\theta^{(t+1)}=\arg\max_\theta J_{VNCE}(\theta,\theta^{(t)})=J_{VNCE}(p_\theta,p_{\theta^{(t)}})$
 
 *Fact.* $J_{NCE}(\theta^{(t)})\nearrow$
+
 
 ---
 

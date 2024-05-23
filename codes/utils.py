@@ -270,3 +270,10 @@ def show_crd(ax, Z, y, colors='rbgymkc', markers='o+x*sd^v<>', centers=None, *ar
     for cc, c, m in zip(centers, colors, markers):
         ax.scatter(cc[0], cc[1], color='k', marker=m)
 
+
+def minimize_matrix(f, X0, *args, **kwargs):
+    from scipy.optimize import minimize
+    size = X0.shape
+    def _f(x):
+        return f(x.reshape(size))
+    return minimize(_f, np.ravel(X0), *args, **kwargs).x.reshape(size)
