@@ -106,6 +106,8 @@ II. train NN $\hat\epsilon$ by data $\{(\hat{\epsilon}(x_{t}(x_{0,i},\epsilon_{i
   $$
   where $L_x$ is LEBO.
 
+2. $\sigma_t^2$ is increasing (if $\alpha_t$ is decreasing)
+
 
 *References*
 

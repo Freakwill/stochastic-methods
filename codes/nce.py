@@ -91,7 +91,7 @@ def prob(X):
     h.fit(Xc, y)
     hx = h.predict_proba(X)[:,0]
 
-    return nu * pn.pdf(X) * (hx / (1-hx))
+    return pn.pdf(X) * (hx / (1-hx))
 
  
 import matplotlib.pyplot as plt

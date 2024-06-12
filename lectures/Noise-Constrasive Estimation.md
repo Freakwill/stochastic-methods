@@ -37,6 +37,8 @@ where $r_\nu(x)=\frac{1}{1-\nu e^{-x}}$.
 
 *Definition.* NCE of $p(x)$ == MCLE of $p(x,d)$
 
+If $h$ is any classifier of X, then $p(x)\sim p_n(x) h(x)/(1-h(x))$
+
 ### obj. function
 
 For true data ${x^{(d)}}$ and noise data ${x^{(n)}}$,
@@ -115,11 +117,11 @@ $$
 
 It is a logistic regression of $Y\sim B(\mathrm{expit}E(x))$ with the dataset $\{(x_i,1),(x_{ij},0)\}$ where $x_i$ is the data, $x_{ij}\sim p_0$.
 
-Note $J$ is not a conditional likelihood of $p(x,0/1)$.
+Note $J$ is not a conditional likelihood of $p(x,0/1)$ the distribution where the data are drawn.
 
 $$
-h=\frac{p_1}{\nu p_0 + p_1}=\frac{e^E}{\nu Z p_0 + e^E}\\
-=\mathrm{expit}(E) \text{ only if $\nu Z p_0=1$}
+h=\frac{p_1}{\nu p_0 + p_1}=\frac{1}{1 + e^{-E}\nu Z p_0 }\\
+=\mathrm{expit}(E),~ \text{only if $\nu Z p_0=1$}
 $$
 
 fix $\theta$, when $\nu Z p_0=1$, i.e. $p_0\sim 1$, NCE ==> NS.
@@ -149,13 +151,17 @@ Y, X, 0
 **CNCE loss**:
 $$
 J(\theta)=J(G(\theta))=E \log(1+e^{-G})\\
-G(x,y;\theta)=\log\frac{\phi(x_1|\theta)p_c(x_2|x_1)}{\phi(x_2|\theta)p_c(x_1|x_2)}
+G(x_1,x_2;\theta)=\log\frac{\phi(x_1|\theta)p_c(x_2|x_1)}{\phi(x_2|\theta)p_c(x_1|x_2)}
 $$
+
+If $p_c$ is sym., then $G=\log\frac{\phi(x_1|\theta)}{\phi(x_2|\theta)}$
 
 *Fact* Neg conditional log-likelihood of the 0/1-classifier is the empirical version of CNCE loss
 
 *Fact*
 $G^*=\argmin J(G) \iff G^* = \log \frac{p_d(x_1|\theta)p_c(x_2|x_1)}{p_d(x_2|\theta)p_c(x_1|x_2)}$
+
+If $h(x_1,x_2)$ is the classifier, then $p(x_1) \sim h/(1-h)$
 
 ## Variational NCE
 

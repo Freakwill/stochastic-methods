@@ -1,18 +1,16 @@
 #!/usr/bin/env python
 
 """
-CD for RBM
+NCE, Negative sampling for word2vec
 
 version = 1.0
 
 *Reference*
-Geoffrey E. Hinton. Training Products of Experts by Minimizing Contrastive Divergence.
-Miguel A. Carreira-Perpinnaan, Geoffrey E. Hinton. On Contrastive Divergence Learning.
+Yoav Goldberg and Omer Levy. word2vec Explained: Deriving Mikolov et al.’s Negative-Sampling Word-Embedding Method
 """
 
 import numpy as np
 import numpy.linalg as LA
-import random
 from scipy.stats import rv_discrete, bernoulli
 from scipy.special import expit, softmax
 from sklearn.base import TransformerMixin
@@ -56,9 +54,10 @@ def h(w, c, wv, a=0, nu=1):
     # for NCE
     return r(G(w, c, wv, a), nu)
 
-# def h(w, c, wv, a=0, nu=None):
-#     # for Negative sampling
-#     return expit(similarity(w, c, wv))
+
+def h(w, c, wv, a=0, nu=None):
+    # for Negative sampling
+    return expit(similarity(w, c, wv))
 
 
 def DJ(w, c, wv, a, nu, hwc):
@@ -84,7 +83,7 @@ def _fit(W, C, Wn, Cn, nu=2):
     dim_embedding = 10
     wv = np.random.randn(*(n_vocab, dim_embedding))
     a = 0
-    max_iter = 300
+    max_iter = 20
     learning_rate = 0.005
     for _ in range(max_iter):
         for k in range(n_batches):
@@ -142,7 +141,8 @@ def fit(d, min_count=None, smoothing_coef=0.5):
 import pathlib
 import re
 
-d = pathlib.Path('/Users/William/Folders/mycorpus/Archive/hegel.txt').read_text()
-d = [w.strip("\n“”.1234567890:()").lower() for w in re.split(r'\W', d) if w.strip("\n“”.1234567890:()") not in {'', ' ', '\n'}]
+# seq. of words
+d = pathlib.Path('../data/bible.txt').read_text()
+d = [w.strip("\n“”.1234567890:()").lower() for w in re.split(r'\W', d) if w.strip("\n“”.1234567890:()").lower() not in {'', ' ', '\n'}]
 
-fit(d)
+fit(d[:2000])
