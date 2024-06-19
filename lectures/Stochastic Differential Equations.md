@@ -84,16 +84,32 @@ With the knowledge of martingale, to verify the density of simple processes.
 
  ### Ito formula
 
-*Theorem(Ito formula)*
+**Theorem(Ito formula)**
 If $dX_t =\mu_tdt+\sigma_tdW_t$, then
-
 $$
-f(t,X_t)=\mu_t'dt+\sigma_t'dW_t\\
+df(t,X_t)=\mu_t'dt+\sigma_t'dW_t\\
 \mu_t'=\partial_t f+\partial_x f(t,X_t) \mu_t + \frac{1}{2}\partial_{xx} f(t,X_t)\sigma_t^2\\
 \sigma_t'=\partial_x f(t,X_t)\sigma_t
 $$
+and
+$$
+(Ef(t,X_t))'=E\mu_t'=\partial_t Ef+E\partial_x f(t,X_t) \mu_t + \frac{1}{2}E\partial_{xx} f(t,X_t)\sigma_t^2
+$$
 
-*Fact.* $df(X_t) = f'(X_t)dt+f''(X_t)(dX_t)^2$
+*Corollary.* $df(X_t) = f'(X_t)dt+f''(X_t)(dX_t)^2$
+
+*Corollary.* If $f(t, X_t)=\log p_t(X_t)$, then
+$$
+(Ef(t,X_t))'=E\partial_x f(t,X_t) \mu_t + \frac{1}{2}E\partial_{xx} f(t,X_t)\sigma_t^2
+$$
+
+**Theorem(Ito formula for high-dim)**
+If $d$-dim process $dX_t =\mu_tdt+\sigma_tdW_t,\mu_t\in\R^d,\sigma_t\in\R^{d\times p}, W_t\in\R^p$(sample sp.), then
+$$
+f(t,X_t)=\mu_t'dt+\sigma_t'dW_t\\
+\mu_t'=\partial_t f+\nabla_x f(t,X_t) \cdot \mu_t + \frac{1}{2} \langle H f(t,X_t),\sigma_t \sigma_t^T\rangle_F\\
+\sigma_t'=(\nabla_x f(t,X_t))^T\sigma_t
+$$
 
 ## Fokker-Planck Equation
 SDE:
@@ -112,10 +128,9 @@ $$
 \partial_t p(x,t) = L^* p, t>s\\
 p(x,s)=\delta_{xy}
 $$
-where $L^*f:=-div_x \mu_t(x) f(x)+\frac{1}{2}\sum_{ij}\partial_{x_i,x_j} A_t(x)f(x)$, adj. of $Lf:=\mu_t\cdot\nabla f+\frac{1}{2}H(f)\cdot A_t$
+where $L^*f:=-\mathrm{div}_x \mu_t(x) f(x)+\frac{1}{2}\sum_{ij}\partial_{x_i,x_j} A_t(x)f(x)$, adj. of $Lf:=\mu_t\cdot\nabla f+\frac{1}{2}H(f)\cdot_F A_t$
 
-*Proof.* Use Ito formula for $f(X_t)$ and the fact of duality $(Lf,g)=(f,L^*g)$,
-
+*Proof.* Use Ito formula for $f(X_t)$ and the fact of duality $(Lf,g)=(f,L^*g)$, so PDE: $(f, L^*p)=ELf= \partial_tEf$
 
 ---
 *exercise*
