@@ -10,9 +10,11 @@ Geoffrey E. Hinton. Training Products of Experts by Minimizing Contrastive Diver
 Miguel A. Carreira-Perpinnaan, Geoffrey E. Hinton. On Contrastive Divergence Learning.
 """
 
+import random
+
 import numpy as np
 import numpy.linalg as LA
-import random
+
 from scipy.stats import rv_discrete, multivariate_normal, bernoulli
 from scipy.special import expit, softmax
 from sklearn.base import TransformerMixin
@@ -21,7 +23,10 @@ from sklearn.base import TransformerMixin
 
 def _gibbs(x, W, nx, pz=None, mc_iter=1, mask=None):
     """Gibbs sampling for RBM
+
+    nx: number of values each xi takes
     """
+
     p, r = W.shape
     if isinstance(mask, np.ndarray):
         mask = np.append(mask, [False])
@@ -30,6 +35,8 @@ def _gibbs(x, W, nx, pz=None, mc_iter=1, mask=None):
     xc = x.copy()
     if pz is None or np.all(pz==0):
         pz = expit(np.dot(x, W))
+    elif len(pz) < len(x):
+        pz = np.append(pz, [1])
     z = np.random.random(r) < pz
     z[-1] = pz[-1] = 1
     for _ in range(mc_iter):
@@ -88,7 +95,7 @@ class CDRBM(TransformerMixin):
 
         x = rbm.generate(mc_iter=50)
     """
-    def __init__(self, ndim_latents=3, max_iter=500, mc_iter=1, persistent=True, bias=True):
+    def __init__(self, ndim_latents=3, max_iter=500, mc_iter=1, persistent=True, bias=True, start=None):
         """CD-RBM
         
         Args:
@@ -104,6 +111,7 @@ class CDRBM(TransformerMixin):
         self.ndim_latents = ndim_latents
         self.bias = bias
         self.n_values = 2
+        self.start = start
 
     def init(self, X):
         n_samples, self.n_features_ = X.shape
@@ -131,7 +139,7 @@ class CDRBM(TransformerMixin):
         return np.dot(x, self.W_)+self.beta_
 
     def mcmc(self, x, mc_iter=None, *args, **kwargs):
-        return _gibbs(x, W=self.weight_, nx=self.n_values, mc_iter=mc_iter or self.mc_iter, *args, **kwargs)
+        return _gibbs(x, W=self.weight_, nx=self.n_values, mc_iter=(mc_iter or self.mc_iter), *args, **kwargs)
 
     def transform(self, X):
         return np.apply_along_axis(lambda x: np.random.random(self.ndim_latents) < self.energy_z(x), 1, X)
@@ -145,15 +153,15 @@ class CDRBM(TransformerMixin):
 
     def fit(self, X):
         self.init(X)
-        self._fit(X, self.max_iter, self.mc_iter, self.persistent)
+        self._fit(X, self.max_iter, self.mc_iter, self.persistent, self.start)
         return self
 
-
-    def _fit(self, X, max_iter=500, mc_iter=1, persistent=True):
+    def _fit(self, X, max_iter=500, mc_iter=1, persistent=True, start=None):
         """CD k(==1) algo.
 
         mc_iter: iterations of mcmc
         persistent: for persistent CD
+        start: the start state of the MCMC (X by default)
         """
         tol = 1e-7
         eta = 0.1
@@ -161,26 +169,32 @@ class CDRBM(TransformerMixin):
         
         n_batchs = 8
 
+        if start is None:
+            start = X
+
         if persistent:
-            X = X.copy()
+            fantasy = start.copy()
 
         pz = np.ones((n_samples, self.ndim_latents))
+        pz[-1] = 1
         for _ in range(self.max_iter):
             # index = np.random.random(n_samples)<0.2
             for n in range(n_batchs):
                 index = np.random.choice(n_samples, int(n_samples//n_batchs))
-                X_batch = X[index]
                 if persistent:
+                    X_batch = fantasy[index]
                     pz_batch = pz[index]
-                    XZ1 = [self.mcmc(x, pz) for x, p in (X_batch, pz_batch)]
+                    XZ1 = [self.mcmc(x, pz=pz) for x, pz in zip(X_batch, pz_batch)]
+                    X_batch = X[index]
                 else:
                     XZ1 = [self.mcmc(x) for x in X_batch]
                 positive = np.mean([self.denergy(x, pz) for x, (pz, _, _) in zip(X_batch, XZ1)], axis=0)
                 negative = np.mean([self.denergy(x1, pz1) for _, x1, pz1 in XZ1], axis=0)
                 DW = positive - negative
 
+                fantasy[index] = np.array([x1 for _, x1, _ in XZ1])
+
                 if persistent:
-                    X[index] = np.array([x1 for _, x1, _ in XZ1])
                     pz[index] = np.array([pz1 for _, _, pz1 in XZ1])
                 else:
                     pz[index] = np.array([pz for pz, _, _ in XZ1])
@@ -188,6 +202,7 @@ class CDRBM(TransformerMixin):
                 # if LA.norm(DW)<tol: break
                 eta *= 0.99
                 self.weight_ += eta * DW
+        self.fantasy = fantasy
 
     def generate(self, mc_iter=30, start=None, n_samples=None, *args, **kwargs):
         x0 = np.random.randint(self.n_values, size=rbm.n_features_) if start is None else start

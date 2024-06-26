@@ -23,7 +23,7 @@ def importance_sampling(func, proposal_dist, p=None, sample_size=1000, bias=Fals
 
     samples = proposal_dist.rvs(size=sample_size)
 
-    weights = 1 / proposal_dist.pdf(samples) 
+    weights = 1 / proposal_dist.pdf(samples)
     if p is not None:
         weights *= p(samples)
         

@@ -100,7 +100,7 @@ $$
 
 *Corollary.* If $f(t, X_t)=\log p_t(X_t)$, then
 $$
-(Ef(t,X_t))'=E\partial_x f(t,X_t) \mu_t + \frac{1}{2}E\partial_{xx} f(t,X_t)\sigma_t^2
+(H_t(X_t))'=E\partial_x f(t,X_t) \mu_t + \frac{1}{2}E\partial_{xx} f(t,X_t)\sigma_t^2
 $$
 
 **Theorem(Ito formula for high-dim)**

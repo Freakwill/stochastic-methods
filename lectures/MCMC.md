@@ -335,3 +335,5 @@ until it converges to $p(c,\theta|x)$​​
 *Homework*
 
 - Transition Kernel of Boltzman algo. satisfies details balance condition.
+
+- Compute the acceptance proba. of Langevin dynamics.
